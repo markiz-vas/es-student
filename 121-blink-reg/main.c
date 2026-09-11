@@ -20,7 +20,7 @@ const uint LED_PIN = 16;
 // #define GPIO_OUT_CLR  (*(volatile uint32_t *)(SIO_BASE + 0x018))
 
 //var2// // Адреса регистров платы (с использованием addressmap.h и sio.h)
-//var2// //Перед суперциклом заведите два указателя на регистры 
+//var2// // Перед суперциклом заведите два указателя на регистры 
 volatile uint32_t *gpio_oe_set  = (uint32_t *)(SIO_BASE + SIO_GPIO_OE_SET_OFFSET );
 volatile uint32_t *gpio_out_set = (uint32_t *)(SIO_BASE + SIO_GPIO_OUT_SET_OFFSET);
 volatile uint32_t *gpio_out_clr = (uint32_t *)(SIO_BASE + SIO_GPIO_OUT_CLR_OFFSET);
@@ -51,7 +51,10 @@ int main()
     // GPIO_OE_SET  = 1u << LED_PIN;   // напрямую в регистр
 
     //var2// // объявить вывод LED_PIN выходом
-    *gpio_oe_set = led_mask;
+    // *gpio_oe_set = led_mask;
+
+    //var3// // работа через асемблер
+    __asm volatile ("str %1, [%0]" : : "r"(gpio_oe_set), "r"(led_mask) : "memory");
 
     // Бесконечный цикл - это обязательное условие,
     // Так как все программы запускаются на Земле 1 раз
@@ -74,9 +77,15 @@ int main()
         // sleep_ms(1000);
 
         //var2// // выставить на выводе высокий уровень напряжения и очищаем его (низкий уровень)
-        *gpio_out_set = led_mask;   // напрямую в регистр GPIO_OUT через sio.h
+        // *gpio_out_set = led_mask;   // напрямую в регистр GPIO_OUT через sio.h
+        // sleep_ms(250);
+        // *gpio_out_clr = led_mask;   // напрямую в регистр GPIO_OUT через sio.h
+        // sleep_ms(500);
+
+        //var3// // работа через асемблер
+        __asm volatile ("str %1, [%0]" : : "r"(gpio_out_set), "r"(led_mask) : "memory");
         sleep_ms(250);
-        *gpio_out_clr = led_mask;   // напрямую в регистр GPIO_OUT через sio.h
-        sleep_ms(500);
+        __asm volatile ("str %1, [%0]" : : "r"(gpio_out_clr), "r"(led_mask) : "memory");
+        sleep_ms(1000);
     }
 }
