@@ -1,22 +1,26 @@
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
 
-const uint LED_PIN = 15;
+// Нормер выхода
+const uint LED_PIN = 16;
 
 int main()
 {
-   gpio_init(LED_PIN);
-   gpio_set_dir(LED_PIN, GPIO_OUT);
+    // Инициализация вывода // отдать вывод модулю GPIO
+    gpio_init(LED_PIN);
+    // Вывод работает на выход // задать направление «выход»
+    gpio_set_dir(LED_PIN, GPIO_OUT);
 
-   while (1)
-   {
-       gpio_put(LED_PIN, 1);
-       sleep_ms(250);
-       gpio_put(LED_PIN, 0);
-       sleep_ms(250);
-       gpio_put(LED_PIN, 1);
-       sleep_ms(250);
-       gpio_put(LED_PIN, 0);
-       sleep_ms(1000);
-   }
+    while (1)
+    {
+        // Изменение уровня напряжения: 1 - 3.3В, 0 - 1.1В
+        gpio_put(LED_PIN, 1);
+        sleep_ms(250);
+        gpio_put(LED_PIN, 0);
+        sleep_ms(250);
+        gpio_put(LED_PIN, 1);
+        sleep_ms(250);
+        gpio_put(LED_PIN, 0);
+        sleep_ms(1000);
+    }
 }
