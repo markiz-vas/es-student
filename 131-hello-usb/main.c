@@ -89,7 +89,8 @@ int main()
         previous = current;     // запоминаем текущее состояние пина кнопки, как предыдущее
 
         // Тест вывод сообщения через кабель usb в виртуальный COM-port
-        printf("Hello, world!  %d\n", led);
+        // printf("Hello, world!  %d\n", led);
+        printf("Hello, world!\n"); //1.3.2 check-1-3-2.py
         sleep_ms(1000);
     }
 }
