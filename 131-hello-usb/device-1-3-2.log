@@ -2,16 +2,16 @@
 проект: 131-hello-usb
 устройство: 2e8a:000a
 серийный номер: E6614104034E9E2F
-порт: /dev/ttyACM0
-начало: 2026-09-17T22:15:11
-   0.237 <-- Hello, world!
-   1.250 <-- Hello, world!
-   2.263 <-- Hello, world!
-   3.277 <-- Hello, world!
-   4.291 <-- Hello, world!
-   5.304 <-- Hello, world!
-   6.318 <-- Hello, world!
-   7.332 <-- Hello, world!
-   8.344 <-- Hello, world!
-   9.359 <-- Hello, world!
+порт: COM3
+начало: 2026-09-17T22:23:33
+   0.437 <-- Hello, world!
+   1.467 <-- Hello, world!
+   2.481 <-- Hello, world!
+   3.495 <-- Hello, world!
+   4.524 <-- Hello, world!
+   5.538 <-- Hello, world!
+   6.568 <-- Hello, world!
+   7.582 <-- Hello, world!
+   8.596 <-- Hello, world!
+   9.626 <-- Hello, world!
 итог: принято строк 10 за 10.0 с
