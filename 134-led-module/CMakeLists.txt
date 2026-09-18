@@ -30,20 +30,30 @@ add_executable(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/main.c
    ${CMAKE_CURRENT_SOURCE_DIR}/led/led.c
    ${CMAKE_CURRENT_SOURCE_DIR}/logging/log.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/device/device.c
 )
 
 # Указываем где искать заголовочные файлы
 # Слово PRIVATE означает, что путь нужен только при сборке этой цели и никуда дальше не передаётся.
 target_include_directories(${PROJECT_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/led
-    ${CMAKE_CURRENT_SOURCE_DIR}/logging
+   ${CMAKE_CURRENT_SOURCE_DIR}/led
+   ${CMAKE_CURRENT_SOURCE_DIR}/logging
+   ${CMAKE_CURRENT_SOURCE_DIR}/device
 )
 
 # С какими библиотеками. Тоже типовая: указать, на что опирается ваш код. 
 # pico_stdlib — основная библиотека SDK, 
 # из неё берутся gpio_init, gpio_put, sleep_ms.
+# pico_unique_id — читает серийный номер платы pico_get_unique_board_id_string()
 target_link_libraries(${PROJECT_NAME}
-   pico_stdlib
+   pico_stdlib       
+   pico_unique_id    
+)
+
+# Команда создаёт макрос DEVICE_BOARD со строкой из PICO_BOARD — как если бы вы написали: 
+#     #define DEVICE_BOARD "pico" в коде, только пишет его сборка.
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    DEVICE_BOARD="${PICO_BOARD}"
 )
 
 # По каким правилам размещать. Специфика микроконтроллера: 

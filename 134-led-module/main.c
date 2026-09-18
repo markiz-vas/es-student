@@ -4,6 +4,8 @@
 #include "led.h"
 // заголовочный файл для лога ошибок #include "logging\log.h"
 #include "log.h"
+// заголовочный файл лога информации о приборе #include "device\device.h"
+#include "device.h"
 
 // Нормер выхода
 const uint BUTTON_PIN = 15;
@@ -34,8 +36,11 @@ void handle_command(int command)
         // Вывод сообщения через кабель usb в виртуальный COM-port
         LOG_INF("led %s\n", led_is_on() ? "on" : "off");
     } else if (command == 'v') {
-        // Прибор печатает строку версии
+        // Прибор печатает строку версии (версия о программе)
         log_version();
+    } else if (command == 'i') {
+        // Прибор печатает строку версии (версия железа и происхождения)
+        device_info();
     } else {
         // Правило хорошего тона, вернуть неизвестную команду
         LOG_ERR("unknown command: %c\n", command);

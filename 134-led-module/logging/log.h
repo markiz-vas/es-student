@@ -4,10 +4,6 @@
 // стандартного ввода-вывода — тот же, что в любой программе на C
 #include <stdio.h>
 
-// Название модуля и его версия
-#define DEVICE_NAME "es-led-module"
-#define FIRMWARE_VERSION "1.0.0"
-
 // Печатает, что за прибор перед вами и какая в нём прошивка
 void log_version(void);
 // Печатает подпись перед текстом сообщения (в LOG_ERR, LOG_INF, LOG_DBG)
@@ -22,7 +18,7 @@ void log_prefix(const char *level, const char *function, int line);
 
 // Если Лог-уровень раньше не определен, то тут его определение (по умолчанию)
 #ifndef LOG_LEVEL
-#define LOG_LEVEL LOG_LEVEL_DBG
+#define LOG_LEVEL LOG_LEVEL_INF
 #endif
 
 // ТЕОРИЯ //
