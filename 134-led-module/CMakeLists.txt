@@ -29,12 +29,14 @@ pico_sdk_init()
 add_executable(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/main.c
    ${CMAKE_CURRENT_SOURCE_DIR}/led/led.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/logging/log.c
 )
 
 # Указываем где искать заголовочные файлы
 # Слово PRIVATE означает, что путь нужен только при сборке этой цели и никуда дальше не передаётся.
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/led
+    ${CMAKE_CURRENT_SOURCE_DIR}/logging
 )
 
 # С какими библиотеками. Тоже типовая: указать, на что опирается ваш код. 

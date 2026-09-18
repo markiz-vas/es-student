@@ -1,7 +1,9 @@
 // стандартного ввода-вывода — тот же, что в любой программе на C
 #include <stdio.h>
-// заголовочный файл светодиода
+// заголовочный файл светодиода #include "led\led.h"
 #include "led.h"
+// заголовочный файл для лога ошибок #include "logging\log.h"
+#include "log.h"
 
 // Нормер выхода
 const uint BUTTON_PIN = 15;
@@ -26,14 +28,17 @@ void handle_command(int command)
     if (command == 'e') {           // 101
         led_set(true);              // включить
         // Вывод сообщения через кабель usb в виртуальный COM-port
-        printf("led %s\n", led_is_on() ? "on" : "off");
+        LOG_INF("led %s\n", led_is_on() ? "on" : "off");
     } else if (command == 'd') {    // 100
         led_set(false);             // погасить
         // Вывод сообщения через кабель usb в виртуальный COM-port
-        printf("led %s\n", led_is_on() ? "on" : "off");
+        LOG_INF("led %s\n", led_is_on() ? "on" : "off");
+    } else if (command == 'v') {
+        // Прибор печатает строку версии
+        log_version();
     } else {
         // Правило хорошего тона, вернуть неизвестную команду
-        printf("unknown command: %c\n", command);
+        LOG_ERR("unknown command: %c\n", command);
     }
 }
 
@@ -90,7 +95,7 @@ int main()
             // Переключить светодиод
             led_toggle();
             // Вывод сообщения через кабель usb в виртуальный COM-port
-            printf("led %s\n", led_is_on() ? "on" : "off");            
+            LOG_INF("led %s\n", led_is_on() ? "on" : "off");
         }
         // Запоминаем, что нажато было раньше (чтобы не мигала)
         previous = current;     // запоминаем текущее состояние пина кнопки, как предыдущее
@@ -107,6 +112,7 @@ int main()
         // Ранний выход из цикла, далее будет обработка символа (command), если "символа не было" - на новую итерацию Суперцикла
         if (command == PICO_ERROR_TIMEOUT) { continue; }
         // Смена значения светодиода по данным команды, поступившей через COM-порт
+        LOG_DBG("got %c\n", command);
         handle_command(command);
 
     }// Суперцикл
