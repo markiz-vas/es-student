@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.15)
 # Плата и микроконтроллер. 
 # Специфика Pico: по этим двум значениям SDK выберет нужные библиотеки 
 # и загрузчик под микросхему памяти, распаянную на плате
-set(PICO_BOARD pico)
+set(PICO_BOARD pico_w)
 set(PICO_PLATFORM rp2040)
 
 # Подключение SDK. Сначала подключается сценарий поиска, 
@@ -48,6 +48,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME}
    pico_stdlib       
    pico_unique_id    
+   pico_cyw43_arch_none     # we need Wifi to access the GPIO, but we don't need anything else
 )
 
 # Команда создаёт макрос DEVICE_BOARD со строкой из PICO_BOARD — как если бы вы написали: 
