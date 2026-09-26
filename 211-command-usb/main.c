@@ -15,12 +15,6 @@ const uint BUTTON_PIN = 15;
 // Константа 20mc для борьбы с дребезгом
 const uint DEBOUNCE_MS = 20;
 
-// Буфер и его длина (32 символа) (глобальная переменная)
-#define LINE_SIZE 32
-char line[LINE_SIZE];
-uint line_length = 0;
-
-
 // Функция определяет, был ли дребезг
 // Считывает два значение, возвращает true, если оба true
 bool get_button_debounce(uint pin)
@@ -30,35 +24,83 @@ bool get_button_debounce(uint pin)
     return state && gpio_get(pin);  // Считали второе значение
 }
 
-// Разбирает команду и возвращаем новое состояние светодиода
-void handle_command(const char *command)
-{
-    // Расшифровка команд, command явно приводится к char
-    if (strcmp(command, "enable") == 0) { 
-        led_set(true);  // включить
-        // Вывод сообщения через кабель usb в виртуальный COM-port
-        LOG_INF("led %s\n", led_is_on() ? "on" : "off");
-    } else if (strcmp(command, "disable") == 0) {
-        led_set(false); // погасить
-        // Вывод сообщения через кабель usb в виртуальный COM-port
-        LOG_INF("led %s\n", led_is_on() ? "on" : "off");
-    } else if (strcmp(command, "version") == 0) {
-        // Прибор печатает строку журнала о версии прошивки
-        log_version();
-    } else if (strcmp(command, "info") == 0) {
-        // Прибор печатает паспорт устройства (версия железа и происхождения)
-        device_info();
-    } else {
-        // Правило хорошего тона, вернуть неизвестную команду
-        LOG_ERR("unknown command: %s\n", command);
-    }
+/// COMAND READER /// BEGEN ///
+// Буфер и его длина (32 символа) (глобальная переменная)
+#define LINE_SIZE 32
+char line[LINE_SIZE];
+uint line_length = 0;
+
+// включаем светодиод и сообщаем новое состояние
+void cmd_enable(void) {
+    led_set(true);  // включить
+    LOG_INF("led %s\n", led_is_on() ? "on" : "off");
 }
 
-// Функция очистки слова из COM-порта
-void clear_line(void) 
+// выключаем светодиод и сообщаем новое состояние
+void cmd_disable(void) {
+    led_set(false); // погасить
+    LOG_INF("led %s\n", led_is_on() ? "on" : "off");
+}
+
+// печатаем паспорт устройства
+void cmd_info(void) {
+    device_info();
+}
+
+// печатаем строку журнала о версии прошивки
+void cmd_version(void) {
+    log_version();
+}
+
+// ping-pong
+void cmd_ping(void) {
+    printf("pong\n");
+}
+
+// Общая сигнатура функции (нужна для создания списка команд)
+typedef void (*command_handler_t)(void);
+// ТЕОРИЯ //
+// Читается запись изнутри наружу: (*command_handler_t) — это указатель, 
+//  void (…)(void) — на функцию без аргументов и без возвращаемого значения. 
+//  Теперь command_handler_t — такой же тип, как uint32_t, 
+//  только переменная этого типа хранит адрес функции.
+
+// Структура с названием и ссылкой на функцию команды
+struct command_t
 {
-    for (int i = 0; i < LINE_SIZE; i++) line[i] = '\0';
-    line_length = 0;
+    const char *name;           // имя команды в консоле
+    command_handler_t handler;  // фунфкция обработчик
+};
+
+// Массив команд для декодирования COM-порта
+const struct command_t commands[] = {
+    { "enable"  , cmd_enable    },  // вкл. светодиод
+    { "disable" , cmd_disable   },  // выкл. светодиод
+    { "info"    , cmd_info      },  // паспорт устройства
+    { "version" , cmd_version   },  // версия программы логирования
+    { "null"    , NULL          },  // тестовая строка для проверки пустой ссылки
+    { "ping"    , cmd_ping      },  // ping-pong
+};
+
+// Общее количество команд (вычисляется в макросе)
+#define COMMAND_COUNT (sizeof(commands) / sizeof(commands[0]))
+
+// Разбирает команду и вызывает функцию по указателю
+void handle_command(const char *command)
+{
+    // Расшифровка команд по массиву команд
+    for (uint i = 0; i < COMMAND_COUNT; i++) {          // цикл по массиву
+        if (strcmp(command, commands[i].name) == 0) {   // в массиве есть команда
+            if (commands[i].handler != NULL) {          // ссылка на функцию не пустая
+                commands[i].handler();                  // вызов функции по указателю
+            } else {
+                LOG_ERR("NULL handler, command: %s\n", command);
+            }// NULL
+            return; // Ранний выход из цикла, если нашлась команда в массиве
+        }// if
+    }// for
+    // Правило хорошего тона, вернуть неизвестную команду
+    LOG_ERR("unknown command: %s\n", command);
 }
 
 // Функция считывания слова из COM-порта
@@ -78,7 +120,8 @@ void read_line(void)
             LOG_DBG("got %s\n", line);  // Печать строки целиком
             handle_command(line);       // расшифровка команды
         }
-        line_length = 0;
+        line_length = 0;    // После выполнения команды обнуляем строку с командой
+        line[line_length] = '\0';   // символ конца строки (обязательный)
         return;
     }
 
@@ -93,7 +136,7 @@ void read_line(void)
         // а то, что ответил прибор. Без этой строки набор идёт вслепую.
     }
 }
-
+/// COMAND READER /// END ///
 
 
 
