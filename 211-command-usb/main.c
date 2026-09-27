@@ -8,6 +8,8 @@
 #include "log.h"
 // заголовочный файл лога информации о приборе #include "device\device.h"
 #include "device.h"
+// заголовочный файл информации о памяти устройства
+#include "memory.h"
 
 // Нормер выхода
 const uint BUTTON_PIN = 15;
@@ -57,6 +59,11 @@ void cmd_ping(void) {
     printf("pong\n");
 }
 
+// Информация о внутреннем устройстве памяти устройства
+void cmd_mem_info(void) {
+    mem_info();
+}
+
 // Общая сигнатура функции (нужна для создания списка команд)
 typedef void (*command_handler_t)(void);
 // ТЕОРИЯ //
@@ -78,8 +85,8 @@ const struct command_t commands[] = {
     { "disable" , cmd_disable   },  // выкл. светодиод
     { "info"    , cmd_info      },  // паспорт устройства
     { "version" , cmd_version   },  // версия программы логирования
-    { "null"    , NULL          },  // тестовая строка для проверки пустой ссылки
     { "ping"    , cmd_ping      },  // ping-pong
+    { "mem_info", cmd_mem_info  },  // Информация о внутреннем устройстве памяти устройства
 };
 
 // Общее количество команд (вычисляется в макросе)

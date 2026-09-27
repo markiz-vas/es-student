@@ -4,7 +4,7 @@
 // Название модуля и его версия
 #define DEVICE_NAME "es-led-module"
 #define FIRMWARE_VERSION "1.0.0"
-#define TASK_INFO "п2.1.2 Таблица команд"
+#define TASK_INFO "п2.1.3 Системная память (TASK p.2.1.3)"
 
 // Информация о проекте
 #define DEVICE_PROJECT "211-command-usb"
