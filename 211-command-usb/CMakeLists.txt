@@ -25,7 +25,7 @@ pico_sdk_init()
 
 # Из чего собирать. 
 # Типовая команда: создать цель сборки с именем ${PROJECT_NAME} 
-# из перечисленных исходных файлов.
+# из перечисленных исходных файлов. (*.c)
 add_executable(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/main.c
    ${CMAKE_CURRENT_SOURCE_DIR}/led/led.c
@@ -34,9 +34,10 @@ add_executable(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory.c
 )
 
-# Указываем где искать заголовочные файлы
+# Указываем где искать заголовочные файлы (*.h)
 # Слово PRIVATE означает, что путь нужен только при сборке этой цели и никуда дальше не передаётся.
 target_include_directories(${PROJECT_NAME} PRIVATE
+   ${CMAKE_CURRENT_SOURCE_DIR}            # для поиска *.h в корневой папки и подпапок
    ${CMAKE_CURRENT_SOURCE_DIR}/led
    ${CMAKE_CURRENT_SOURCE_DIR}/logging
    ${CMAKE_CURRENT_SOURCE_DIR}/device

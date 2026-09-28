@@ -10,6 +10,8 @@
 #include "device.h"
 // заголовочный файл информации о памяти устройства
 #include "memory.h"
+// заголовочный файл информации Структура с названием и ссылкой на функцию команды
+#include "command.h"
 
 // Нормер выхода
 const uint BUTTON_PIN = 15;
@@ -64,20 +66,6 @@ void cmd_mem_info(void) {
     mem_info();
 }
 
-// Общая сигнатура функции (нужна для создания списка команд)
-typedef void (*command_handler_t)(void);
-// ТЕОРИЯ //
-// Читается запись изнутри наружу: (*command_handler_t) — это указатель, 
-//  void (…)(void) — на функцию без аргументов и без возвращаемого значения. 
-//  Теперь command_handler_t — такой же тип, как uint32_t, 
-//  только переменная этого типа хранит адрес функции.
-
-// Структура с названием и ссылкой на функцию команды
-struct command_t
-{
-    const char *name;           // имя команды в консоле
-    command_handler_t handler;  // фунфкция обработчик
-};
 
 // Массив команд для декодирования COM-порта
 const struct command_t commands[] = {
@@ -88,15 +76,15 @@ const struct command_t commands[] = {
     { "ping"    , cmd_ping      },  // ping-pong
     { "mem_info", cmd_mem_info  },  // Информация о внутреннем устройстве памяти устройства
 };
+// Общее количество команд (вычисляется и сохраняется в константу)
+const uint command_count = sizeof(commands) / sizeof(commands[0]);
 
-// Общее количество команд (вычисляется в макросе)
-#define COMMAND_COUNT (sizeof(commands) / sizeof(commands[0]))
 
 // Разбирает команду и вызывает функцию по указателю
 void handle_command(const char *command)
 {
     // Расшифровка команд по массиву команд
-    for (uint i = 0; i < COMMAND_COUNT; i++) {          // цикл по массиву
+    for (uint i = 0; i < command_count; i++) {          // цикл по массиву
         if (strcmp(command, commands[i].name) == 0) {   // в массиве есть команда
             if (commands[i].handler != NULL) {          // ссылка на функцию не пустая
                 commands[i].handler();                  // вызов функции по указателю

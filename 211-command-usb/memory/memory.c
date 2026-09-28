@@ -1,5 +1,7 @@
 // заголовочный файл информации о памяти устройства
 #include "memory.h"
+// заголовочный файл информации Структура с названием и ссылкой на функцию команды
+#include "command.h"
 
 // стандартного ввода-вывода — тот же, что в любой программе на C
 #include <stdio.h>
@@ -55,9 +57,9 @@ void mem_info(void)
     row("sram", (uintptr_t)sram_start, (uintptr_t)sram_end); //+
 
     // rom — базовый адрес из SDK, размер из datasheet (Read-Only Memory)
-    #define PICO_ROM_SIZE_BYTES (16*1024) // размер из документации: 16kB (ROM) is at address 0x00000000
+    #define ROM_SIZE_BYTES (16*1024) // размер из документации: 16kB (ROM) is at address 0x00000000
     uintptr_t rom_start  = ROM_BASE;                    // начало блока ROM
-    uintptr_t rom_size   = PICO_ROM_SIZE_BYTES;         // размер блока ROM
+    uintptr_t rom_size   = ROM_SIZE_BYTES;              // размер блока ROM
     uintptr_t rom_end    = rom_start + rom_size;        // конец блока ROM
     row("rom", (uintptr_t)rom_start, (uintptr_t)rom_end); //+
 
