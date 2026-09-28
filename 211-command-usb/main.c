@@ -8,7 +8,7 @@
 #include "log.h"
 // заголовочный файл лога информации о приборе #include "device\device.h"
 #include "device.h"
-// заголовочный файл информации о памяти устройства
+// заголовочный файл информации о памяти устройства #include "memory\memory.h"
 #include "memory.h"
 // заголовочный файл информации Структура с названием и ссылкой на функцию команды
 #include "command.h"
@@ -66,6 +66,11 @@ void cmd_mem_info(void) {
     mem_info();
 }
 
+// Информация о динамической памяти устройства (RAM)
+void cmd_fw_info(void){
+    fw_info();
+}
+
 
 // Массив команд для декодирования COM-порта
 const struct command_t commands[] = {
@@ -75,6 +80,7 @@ const struct command_t commands[] = {
     { "version" , cmd_version   },  // версия программы логирования
     { "ping"    , cmd_ping      },  // ping-pong
     { "mem_info", cmd_mem_info  },  // Информация о внутреннем устройстве памяти устройства
+    { "fw_info" , cmd_fw_info   },  // Информация о динамической памяти устройства (RAM)
 };
 // Общее количество команд (вычисляется и сохраняется в константу)
 const uint command_count = sizeof(commands) / sizeof(commands[0]);

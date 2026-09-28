@@ -1,12 +1,16 @@
-// заголовочный файл информации о памяти устройства
+// заголовочный файл информации о памяти устройства // заголовочный файл информации о памяти устройства #include "memory\memory.h"
 #include "memory.h"
 // заголовочный файл информации Структура с названием и ссылкой на функцию команды
-#include "command.h"
+#include "command.h" // #include "..\command.h"
+// заголовочный файл лога информации о приборе #include "..\device\device.h"
+#include "device.h"
 
 // стандартного ввода-вывода — тот же, что в любой программе на C
 #include <stdio.h>
 // ради типа uintptr_t
 #include <stdint.h>
+// ради malloc() и free(), иначе ошибка "implicit declaration of function 'malloc'"
+#include <stdlib.h>
 // с ним приходит размера флеш памяти конкретной платы
 #include "pico/stdlib.h"                // PICO_FLASH_SIZE_BYTES (boards\pico.h)
 // ради базовых адресов флеш, ОЗУ и ПЗУ
@@ -32,6 +36,15 @@ extern char __StackTop;             // вершина стека ядра 0, к�
 //extern char __binary_info_start;    // Старт блока .binary_info (конец блока .rodata)
 //extern char __binary_info_end;      // Конец блока .binary_info (__etext; // конец .text во flash )
 
+
+// Глобальные переменные для проверки, где лежат переменные (TASK 2.1.4)
+uint32_t data_variable = 100;   // .data in flash and RAM
+uint32_t bss_variable;          // .bss in RAM
+
+
+
+
+// TASK 2.1.3 //
 // Вывод строки с адресом: шапка таблицы: область, начало, конец, размер
 static void row(const char *name, uintptr_t start, uintptr_t end)
 {
@@ -128,3 +141,113 @@ void mem_info(void)
     printf("  %-12s %8u for heap and %u for stack\n", 
         "ram free", heap_size, stack_size);
 }
+
+
+
+
+
+
+// TASK 2.1.4 //
+// печать строки данных для функции
+static void fw_row_func(const char *obj_name, uintptr_t address)
+{
+    // адрес функции со сброшенным признаком Thumb
+    // uint16_t *main_code = (uint16_t *)((uintptr_t)main & ~1u);
+    uint16_t *addr = (uint16_t *)(address & ~1u);
+
+    printf("%-15s 0x%08x 0x%04x\n",
+           obj_name, (unsigned)address, *(uint16_t *)addr);
+}
+
+// печать строки данных для структуры
+static void fw_row_struct(const char *obj_name, uintptr_t address, bool is_struct_item)
+{
+    printf(is_struct_item ? "- %-13s 0x%08x\n" : "%-15s 0x%08x\n",
+           obj_name, (unsigned)address);
+}
+
+// печать строки данных для константы
+static void fw_row_const(const char *obj_name, uintptr_t address)
+{
+    printf("%-15s 0x%08x %s\n",
+           obj_name, (unsigned)address, (char *)(uint32_t *)address);
+}
+
+// печать строки данных для переменной
+static void fw_row_var(const char *obj_name, uintptr_t address)
+{
+    if ( (uint32_t *)address != NULL )
+        printf("%-15s 0x%08x %u\n",
+           obj_name, (unsigned)address, (unsigned)*(uint32_t *)address);
+}
+
+// Информация о динамической памяти устройства (RAM)
+void fw_info(void)
+{
+    // считаем вызов: data_variable и bss_variable на единицу больше
+    data_variable++;    // глобальные переменные // .data
+    bss_variable++;     // глобальные переменные // .bss
+
+    // адреса функций со сброшенным признаком Thumb
+    int main(void); // делаем локальную ссылку на основную функцию из main.c
+    // uint16_t *main_code = (uint16_t *)((uintptr_t)main & ~1u);
+    // ТЕОРИЯ // (TASK 2.1.4)
+    // Если прибор перестал отвечать сразу после fw_info 
+    //  и лечится только перезаписью — вы читаете по нечётному адресу. 
+    //  Проверьте, что & ~1u стоит до приведения к типу указателя, а не после разыменования.
+    // ТЕОРИЯ // (TASK 2.1.4)
+    // В младшем разряде адреса функции ядро Cortex-M0+ держит признак набора команд Thumb — единицу. 
+    //  Для перехода этот адрес правильный: ядро сбрасывает разряд само. 
+    //  Для чтения байт он негоден: адрес получается нечётным, 
+    //  а прочитать по нечётному адресу слово или полуслово ядро не может и останавливает программу ошибкой HardFault. 
+    //  Прошивка при этом перестаёт отвечать, терминал молчит, и понять причину без этого абзаца почти невозможно. 
+    //  Операция & ~1u сбрасывает признак, и адрес становится чётным.
+
+
+    // локальная переменная и блок из кучи
+    uint32_t stack_variable = 1946;                         // Значение в стеке
+    uint32_t *heap_variable = malloc(sizeof(uint32_t));     // Значение в куче // ручное выделение памяти
+    if (heap_variable != NULL) { *heap_variable = 1951; }   // Защита от пустого адреса
+    // ТЕОРИЯ // (TASK 2.1.4)
+    // 1946 и 1951 нужны для различия значений переменных (только для проверки)
+    // Печатайте адрес блока, а не адрес указателя!
+    // heap_variable — указатель, и он сам лежит на стеке, рядом со stack_variable. 
+    //  Адрес блока в куче — это его значение: печатать нужно heap_variable, 
+    //  не &heap_variable. Иначе в таблице вместо кучи окажется ещё один адрес из стека. 
+    // ТЕОРИЯ // (TASK 2.1.4)
+    // malloc() без парного free() — это утечка памяти: аллокатор считает блок занятым, 
+    //  хотя пользоваться им уже некому. В программе на компьютере утечку прикрывает завершение процесса. 
+    //  Прошивка не завершается никогда, и утечка в суперцикле рано или поздно «доест» всю кучу. 
+
+    // шапка: объект, адрес, значение
+    printf("%-15s %-10s %-s\n", "object", "address", "value");
+
+    // main, fw_info  — адрес с признаком Thumb и два байта по сброшенному адресу
+    fw_row_func("main"   , (uintptr_t)main   ); // .text
+    fw_row_func("fw_info", (uintptr_t)fw_info); // .text
+
+    // commands       — адрес массива
+    fw_row_struct("commands", (uintptr_t)&commands, false); // .text
+
+    // обработчики    — имя команды и адрес обработчика, строкой на команду
+    for (uint i = 0; i < command_count; i++) {  // .text
+        fw_row_struct(commands[i].name, (uintptr_t)commands[i].handler, true);
+    }
+
+    // константы      — адрес и значение строк паспорта из device.h
+    fw_row_const("DEVICE_PROJECT", (uintptr_t)DEVICE_PROJECT); // .rodata
+    fw_row_const("DEVICE_BOARD"  , (uintptr_t)DEVICE_BOARD  ); // .rodata
+    
+    // data_variable  — адрес и значение, секция .data
+    fw_row_var("data_variable" , (uintptr_t)&data_variable );   // .data flash
+    // bss_variable   — адрес и значение, секция .bss
+    fw_row_var("bss_variable"  , (uintptr_t)&bss_variable  );   // .bss flash
+    // stack_variable — адрес и значение
+    fw_row_var("stack_variable", (uintptr_t)&stack_variable);   // .stack
+    // heap_variable  — адрес и значение
+    fw_row_var("heap_variable" , (uintptr_t)heap_variable  );   // .heap
+
+    // возвращаем блок кучи
+    free(heap_variable);    // ручное освобождение (очистка) памяти в куче
+}
+
