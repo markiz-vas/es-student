@@ -310,7 +310,7 @@ void boot_info(void)
     printf("%-15s %u\n", "  led bit", led_level);
 
     //   gpio_get     — то же значение через SDK
-    printf("%-15s %u\n", "  led bit", gpio_get(led_pin()));
+    printf("%-15s %u\n", "  gpio_get", gpio_get(led_pin()));
     
     // ТЕОРИЯ // TASK 2.1.5 //
     // Одно и то же двумя путями.
