@@ -18,7 +18,7 @@ void log_prefix(const char *level, const char *function, int line);
 
 // Если Лог-уровень раньше не определен, то тут его определение (по умолчанию)
 #ifndef LOG_LEVEL
-#define LOG_LEVEL LOG_LEVEL_DBG
+#define LOG_LEVEL LOG_LEVEL_INF
 #endif
 
 // ТЕОРИЯ //

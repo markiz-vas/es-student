@@ -71,6 +71,11 @@ void cmd_fw_info(void){
     fw_info();
 }
 
+// Печатает в консоль информацию о структуре info_t (раскладка в памяти)
+void cmd_dev_info(void){
+    dev_info();
+}
+
 
 // Массив команд для декодирования COM-порта
 const struct command_t commands[] = {
@@ -81,6 +86,7 @@ const struct command_t commands[] = {
     { "ping"    , cmd_ping      },  // ping-pong
     { "mem_info", cmd_mem_info  },  // Информация о внутреннем устройстве памяти устройства
     { "fw_info" , cmd_fw_info   },  // Информация о динамической памяти устройства (RAM)
+    { "dev_info", cmd_dev_info  },  // Информация о о структуре info_t (раскладка в памяти)
 };
 // Общее количество команд (вычисляется и сохраняется в константу)
 const uint command_count = sizeof(commands) / sizeof(commands[0]);
