@@ -114,6 +114,6 @@ void dev_info(void)
     unsigned size_info_t = sizeof(device_card);
     unsigned size_fields = sizeof(device_card.version) + sizeof(device_card.name) + sizeof(device_card.revision);
     // Печать данных о памяти и размещении полей в структуре
-    printf("%s %u %s %u %s %u\n",
+    printf("%s %u, %s %u, %s %u\n",
            "fields", size_fields, "sizeof", size_info_t, "padding", size_info_t - size_fields);
 }
