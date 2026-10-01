@@ -4,6 +4,8 @@
 #include "command.h" // #include "..\command.h"
 // заголовочный файл лога информации о приборе #include "..\device\device.h"
 #include "device.h"
+// заголовочный файл светодиода
+#include "led.h"
 
 // стандартного ввода-вывода — тот же, что в любой программе на C
 #include <stdio.h>
@@ -15,6 +17,12 @@
 #include "pico/stdlib.h"                // PICO_FLASH_SIZE_BYTES (boards\pico.h)
 // ради базовых адресов флеш, ОЗУ и ПЗУ
 #include "hardware/regs/addressmap.h"   // XIP_BASE, SRAM_BASE, ROM_BASE, SRAM_END
+
+//var2// // Для прямой манипуляции с адресами регистров
+//var2// // Числа выписывать не нужно: и базовый адрес, 
+//var2// // и смещения уже объявлены в заголовочных файлах SDK
+//#include "hardware/regs/addressmap.h"   // SIO_BASE
+#include "hardware/regs/sio.h"          // SIO_GPIO_IN_OFFSET
 
 // Имена с адресами границ памяти (адресов) в устройстве
 extern char __flash_binary_start;   // начало образа во флеш
@@ -251,3 +259,63 @@ void fw_info(void)
     free(heap_variable);    // ручное освобождение (очистка) памяти в куче
 }
 
+
+// Прибор читает память по числам, взятым из таблицы векторов (флеш-память)
+void boot_info(void)
+{
+    // указатель на таблицу векторов и два первых слова из неё
+    // #define VECTOR_TABLE 0x10000100     // Адрес фиксирован (uintptr_t)&__boot2_end__)
+    // const uint32_t *vectors = (const uint32_t *)VECTOR_TABLE;    // Начало блока .text
+    const uint32_t *vectors = (const uint32_t *)(uintptr_t)&__boot2_end__;
+    uint32_t stack_top      = vectors[0];
+    uint32_t reset_handler  = vectors[1];
+    // ТЕОРИЯ // TASK 2.1.5 //
+    //  (const uint32_t *)VECTOR_TABLE - Число превращается в указатель приведением типа, 
+    //  а дальше с ним работают как с обычным массивом: vectors[0] — первое слово, vectors[1] — второе. 
+    //  Тип uint32_t выбран потому, что таблица векторов состоит из адресов, а адрес на этом ядре занимает четыре байта. 
+    //  Слово const говорит, что читать будем, а писать не будем: во флеш-память по этому адресу записать всё равно нельзя.
+    
+
+    // указатель на регистр GPIO_IN и разряд вывода светодиода
+    //var1// // Адреса регистров платы (напрямую без addressmap.h)
+    // #define SIO_BASE    0xd0000000
+    // #define GPIO_IN     (*(volatile uint32_t *)(SIO_BASE + 0x004))
+    //var2// // Адреса регистров платы (с использованием addressmap.h и sio.h)
+    volatile uint32_t *gpio_in  = (uint32_t *)(SIO_BASE + SIO_GPIO_IN_OFFSET );
+    // В регистре по разряду на каждый вывод, а нужен один — тот, на котором сидит светодиод:
+    uint32_t led_level = (*gpio_in >> led_pin()) & 1u;  // Выделение разряда сдвигом и маской
+    
+
+
+
+    // vector table   — адрес таблицы
+    printf("%-15s 0x%08x\n", "vector table", vectors);
+
+    //   stack top    — первое слово
+    // printf("%-15s 0x%08x\n", "  stack top", (uintptr_t)&__StackTop);
+    printf("%-15s 0x%08x\n", "  stack top", stack_top);
+
+    //   reset        — второе слово
+    printf("%-15s 0x%08x\n", "  reset", reset_handler);
+
+    //   reset (even) — оно же со сброшенным признаком Thumb
+    uint16_t *reset_handler_Thumb = (uint16_t *)((uintptr_t)reset_handler & ~1u);
+    printf("%-15s 0x%08x\n", "  reset (even)", (unsigned)reset_handler_Thumb);
+
+
+    // gpio in        — адрес регистра
+    printf("%-15s 0x%08x\n", "gpio in", gpio_in);
+
+    //   led bit      — разряд из регистра
+    printf("%-15s %u\n", "  led bit", led_level);
+
+    //   gpio_get     — то же значение через SDK
+    printf("%-15s %u\n", "  led bit", gpio_get(led_pin()));
+    
+    // ТЕОРИЯ // TASK 2.1.5 //
+    // Одно и то же двумя путями.
+    // gpio_get() внутри делает ровно то, что вы написали руками: читает GPIO_IN и выбирает нужный разряд. 
+    //  Смысл задания не в том, чтобы обойтись без SDK, а в том, чтобы увидеть, 
+    //  что за его функциями нет ничего волшебного — только адрес из документации и разыменование указателя. 
+    //  Дальше в курсе вы будете читать так регистры, для которых готовой функции в SDK нет вовсе.
+}

@@ -8,7 +8,7 @@
 // #define DEVICE_NAME "es-led-module" // для 12 байт имя "es-led-module" великовато (нужно 14 байт)
 #define DEVICE_NAME "es-cmd-usb"
 #define FIRMWARE_VERSION "1.0.0"
-#define TASK_INFO "п2.1.5 Память массивов и структур (TASK p.2.1.5)"
+#define TASK_INFO "п2.1.6 Чтение по адресу (TASK p.2.1.6)"
 
 // Информация о проекте
 #define DEVICE_PROJECT "211-command-usb"

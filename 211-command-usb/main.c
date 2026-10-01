@@ -76,17 +76,23 @@ void cmd_dev_info(void){
     dev_info();
 }
 
+// Прибор читает память по числам, взятым из таблицы векторов (флеш-память)
+void cmd_boot_info(void){
+    boot_info();
+}
+
 
 // Массив команд для декодирования COM-порта
 const struct command_t commands[] = {
-    { "enable"  , cmd_enable    },  // вкл. светодиод
-    { "disable" , cmd_disable   },  // выкл. светодиод
-    { "info"    , cmd_info      },  // паспорт устройства
-    { "version" , cmd_version   },  // версия программы логирования
-    { "ping"    , cmd_ping      },  // ping-pong
-    { "mem_info", cmd_mem_info  },  // Информация о внутреннем устройстве памяти устройства
-    { "fw_info" , cmd_fw_info   },  // Информация о динамической памяти устройства (RAM)
-    { "dev_info", cmd_dev_info  },  // Информация о о структуре info_t (раскладка в памяти)
+    { "enable"      , cmd_enable    },  // вкл. светодиод
+    { "disable"     , cmd_disable   },  // выкл. светодиод
+    { "info"        , cmd_info      },  // паспорт устройства
+    { "version"     , cmd_version   },  // версия программы логирования
+    { "ping"        , cmd_ping      },  // ping-pong
+    { "mem_info"    , cmd_mem_info  },  // Информация о внутреннем устройстве памяти устройства
+    { "fw_info"     , cmd_fw_info   },  // Информация о динамической памяти устройства (RAM)
+    { "dev_info"    , cmd_dev_info  },  // Информация о о структуре info_t (раскладка в памяти)
+    { "boot_info"   , cmd_boot_info },  // Прибор читает память по числам, взятым из таблицы векторов (флеш-память)
 };
 // Общее количество команд (вычисляется и сохраняется в константу)
 const uint command_count = sizeof(commands) / sizeof(commands[0]);

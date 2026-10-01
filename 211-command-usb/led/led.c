@@ -49,5 +49,10 @@ bool led_is_on(void)
     return led_state;
 }
 
+// возвращает номер вывода светодиода
+uint led_pin(void)
+{
+    return LED_PIN;
+}
 
 

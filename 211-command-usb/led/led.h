@@ -14,5 +14,7 @@ void led_set(bool on);
 void led_toggle(void);
 // возвращает состояние светодиода (выставленный уровень)
 bool led_is_on(void);
+// возвращает номер вывода светодиода
+uint led_pin(void);
 
 //#endif
