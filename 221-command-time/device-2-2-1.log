@@ -1,0 +1,25 @@
+задание: 2.2.1
+проект: 221-command-time
+устройство: 2e8a:000a
+серийный номер: E6614104034E9E2F
+порт: COM3
+начало: 2026-10-12T21:55:55
+   0.000 --> clk_info
+   0.156 <-- clk_info
+   0.171 <-- signal     set_khz measured_khz
+   0.171 <-- clk_ref      12000        12001
+   0.171 <-- clk_sys     125000       125000
+   0.171 <-- clk_peri    125000       125000
+   0.171 <-- clk_usb      48000        48000
+   0.187 <-- clk_adc      48000        48000
+   0.187 <-- rosc             -         5569
+   2.184 --> info
+   2.277 <-- info
+   2.277 <-- project: 221-command-time
+   2.277 <-- repo: https://github.com/markiz-vas/es-student
+   2.277 <-- board: pico
+   2.277 <-- serial: E6614104034E9E2F
+   2.277 <-- chip: manufacturer 0x927, part 0x0002, revision 2
+   2.277 <-- pico-sdk: 2.3.0
+   2.277 <-- TASK: ��2.2.1 ���������������� �������������� (TASK p.2.2.1)
+итог: отправлено команд 2, принято строк 16
