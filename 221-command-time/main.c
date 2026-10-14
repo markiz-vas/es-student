@@ -93,6 +93,11 @@ void cmd_uptime(void){
     uptime();
 }
 
+/// CALC_PI /// Объявление ///
+// печатает значение π и время расчёта в миллисекундах
+void cmd_calc_pi(void);
+
+
 // Массив команд для декодирования COM-порта
 const struct command_t commands[] = {
     //button//{ "ena_|_ble"      , cmd_ena_|_ble    },  // вкл. светодиод
@@ -106,6 +111,7 @@ const struct command_t commands[] = {
     { "boot_info"   , cmd_boot_info },  // Прибор читает память по числам, взятым из таблицы векторов (флеш-память)
     { "clk_info"    , cmd_clk_info  },  // Модуль часов (инфо)
     { "uptime"      , cmd_uptime    },  // Печатает монотонное время прибора, в миллисекундах
+    { "calc_pi"     , cmd_calc_pi   },  // Печатает значение π и время расчёта в миллисекундах
 };
 // Общее количество команд (вычисляется и сохраняется в константу)
 const uint command_count = sizeof(commands) / sizeof(commands[0]);
@@ -188,6 +194,46 @@ void blink(void)
 /// BLINK /// END ///
 
 
+/// CALC_PI /// SATART ///
+// calc_pi // TASK 2.2.3 //
+// прикидка: за член ряда 4 операции с double, 175 + 110 + 190 + 110 = 585 тактов;
+// 1 000 000 членов по 585 тактов при 125 МГц — около 4,7 с (4,68 с)
+const uint CALC_PI_TERMS = 1000000;
+
+// Вычисление ПИ, суммирует ряд Лейбница
+double calc_pi(uint terms)
+{
+    // сумма ряда и знак очередного члена, оба double
+    double sum  = 0.0;
+    double sign = 1.0;
+    // для k от 0 до terms: прибавить к сумме sign / (2k + 1) и сменить знак
+    for (int k = 0; k < terms; k++) {
+        // Прибавить очередной член ряда: ±1 / (2k + 1)
+        sum += sign / (2.0 * k + 1.0);
+        sign = -sign;
+    }
+    // Сумма ряда равна π/4
+    return 4.0 * sum;           // вернуть сумму, умноженную на 4
+}
+
+// ТЕОРИЯ // TASK 2.2.3 //
+// Без слова 'volatile' компилятор вправе перенести расчёт за второе чтение часов. 
+//  Результат от этого не изменится, но замер измерит пустое место. 
+//  Запись в volatile компилятор не переносит, и расчёт остаётся между двумя чтениями. 
+volatile double pi_result;
+
+// печатает значение π и время расчёта в миллисекундах
+void cmd_calc_pi(void)
+{
+    uint64_t start_us = time_us_64();
+    pi_result = calc_pi(CALC_PI_TERMS);
+    uint64_t spent_us = time_us_64() - start_us;
+    printf("pi: %.8f\n", pi_result);
+    printf("time: %llu ms\n", spent_us / 1000);
+}
+/// CALC_PI /// END ///
+
+
 
 int main()
 {
@@ -223,7 +269,6 @@ int main()
 
     //button// // previous - что вывод показывал на прошлом шаге цикла (нужно для кнопки)
     //button// bool previous = false;
-
 
 
 
