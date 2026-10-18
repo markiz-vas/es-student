@@ -130,6 +130,8 @@ const struct command_t commands[] = {
     { "calc_pi"     , cmd_calc_pi   },  // Печатает значение π и время расчёта в миллисекундах
     { "main_time_exec" , main_time_exec },// печатает среднее и максимальное время суперцикла
     { "main_time_reset", main_time_reset},// обнуляет максимальное время суперцикла
+    { "clk_sys_low"    , clk_sys_low    },// Установить пониженную частоту процессора
+    { "clk_sys_default", clk_sys_default},// Установить частоту прочессора по умолчанию
 };
 // Общее количество команд (вычисляется и сохраняется в константу)
 const uint command_count = sizeof(commands) / sizeof(commands[0]);
