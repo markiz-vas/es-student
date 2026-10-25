@@ -31,8 +31,8 @@ add_executable(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/led/led.c
    ${CMAKE_CURRENT_SOURCE_DIR}/logging/log.c
    ${CMAKE_CURRENT_SOURCE_DIR}/device/device.c
-   ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory.c
-   ${CMAKE_CURRENT_SOURCE_DIR}/clock/clock.c
+   # ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory.c
+   # ${CMAKE_CURRENT_SOURCE_DIR}/clock/clock.c
    ${CMAKE_CURRENT_SOURCE_DIR}/profiling/profiling.c
 )
 
@@ -43,8 +43,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
    ${CMAKE_CURRENT_SOURCE_DIR}/led
    ${CMAKE_CURRENT_SOURCE_DIR}/logging
    ${CMAKE_CURRENT_SOURCE_DIR}/device
-   ${CMAKE_CURRENT_SOURCE_DIR}/memory
-   ${CMAKE_CURRENT_SOURCE_DIR}/clock
+   # ${CMAKE_CURRENT_SOURCE_DIR}/memory
+   # ${CMAKE_CURRENT_SOURCE_DIR}/clock
    ${CMAKE_CURRENT_SOURCE_DIR}/profiling
 )
 
@@ -60,15 +60,17 @@ target_link_libraries(${PROJECT_NAME}
 
 # Команда создаёт макрос DEVICE_BOARD со строкой из PICO_BOARD — как если бы вы написали: 
 #     #define DEVICE_BOARD "pico" в коде, только пишет его сборка.
+# Определение макросов (#define <name> <значение>), формат: <name>=<значение> [ВНИМАНИЕ: пробелы недопустимы]
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-    DEVICE_BOARD="${PICO_BOARD}"
+    DEVICE_BOARD="${PICO_BOARD}" # Имя проекта
+    LOG_LEVEL=LOG_LEVEL_INF      # Уровень лога
 )
 
-# По каким правилам размещать. Специфика микроконтроллера: 
-# указать скрипт компоновщика, скопированный на втором шаге.
-pico_set_linker_script(${PROJECT_NAME}
-   ${CMAKE_CURRENT_SOURCE_DIR}/memmap_rp2040.ld
-)
+#???# #TASK 2.3# # По каким правилам размещать. Специфика микроконтроллера: 
+#???# #TASK 2.3# # указать скрипт компоновщика, скопированный на втором шаге.
+#???# #TASK 2.3# pico_set_linker_script(${PROJECT_NAME}
+#???# #TASK 2.3#    ${CMAKE_CURRENT_SOURCE_DIR}/memmap_rp2040.ld
+#???# #TASK 2.3# )
 
 # В каких форматах выдать результат. 
 # Специфика Pico: кроме основного образа получить файлы .bin и .uf2 — 

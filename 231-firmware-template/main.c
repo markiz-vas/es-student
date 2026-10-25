@@ -8,27 +8,29 @@
 #include "log.h"
 // заголовочный файл лога информации о приборе #include "device\device.h"
 #include "device.h"
-// заголовочный файл информации о памяти устройства #include "memory\memory.h"
-#include "memory.h"
 // заголовочный файл информации Структура с названием и ссылкой на функцию команды
 #include "command.h"
-// заголовочный файл модуля часов "clock\clock.h"
-#include "clock.h"
 // заголовочный файл модуля профилирования (время суперцикла)
 #include "profiling.h"
 
+// TASK 2.3.1// dell memory, clock //
+//memory// // заголовочный файл информации о памяти устройства #include "memory\memory.h"
+//memory// #include "memory.h"
+//clock// // // заголовочный файл модуля часов "clock\clock.h"
+//clock// // #include "clock.h"
+
 //button// // Нормер выхода
-//button// const uint BUT_|_TON_PIN = 15;
+//button// const uint BUTTON_PIN = 15;
 
 //button// // Константа 20mc для борьбы с дребезгом
-//button// const uint DEB_|_OUNCE_MS = 20;
+//button// const uint DEBOUNCE_MS = 20;
 
 //button// // Функция определяет, был ли дребезг
 //button// // Считывает два значение, возвращает true, если оба true
-//button// bool get_but_|_ton_debounce(uint pin)
+//button// bool get_button_debounce(uint pin)
 //button// {
 //button//     bool state = gpio_get(pin);     // Считали первое значение
-//button//     sl_|_eep_ms(DEB_|_OUNCE_MS);          // подождали DEB_|_OUNCE_MS
+//button//     sleep_ms(DEBOUNCE_MS);          // подождали DEBOUNCE_MS
 //button//     return state && gpio_get(pin);  // Считали второе значение
 //button// }
 
@@ -39,67 +41,75 @@ char line[LINE_SIZE];
 uint line_length = 0;
 
 //button// // включаем светодиод и сообщаем новое состояние
-//button// void cmd_ena_|_ble(void) {
+//button// void cmd_enable(void) {
 //button//     led_set(true);  // включить
 //button//     LOG_INF("led %s\n", led_is_on() ? "on" : "off");
 //button// }
 
 //button// // выключаем светодиод и сообщаем новое состояние
-//button// void cmd_dis_|_able(void) {
+//button// void cmd_disable(void) {
 //button//     led_set(false); // погасить
 //button//     LOG_INF("led %s\n", led_is_on() ? "on" : "off");
 //button// }
 
+//log// // печатаем строку журнала о версии прошивки
+//log// void cmd_version(void) {
+//log//     log_version();
+//log// }
+
+//memory// // Информация о внутреннем устройстве памяти устройства
+//memory// void cmd_mem_info(void) {
+//memory//     mem_info();
+//memory// }
+
+//memory// // Информация о динамической памяти устройства (RAM)
+//memory// void cmd_fw_info(void){
+//memory//     fw_info();
+//memory// }
+
+//memory// // Печатает в консоль информацию о структуре info_t (раскладка в памяти)
+//memory// void cmd_dev_info(void){
+//memory//     dev_info();
+//memory// }
+
+//memory// // Прибор читает память по числам, взятым из таблицы векторов (флеш-память)
+//memory// void cmd_boot_info(void){
+//memory//     boot_info();
+//memory// }
+
+//clock// // Модуль часов (инфо)
+//clock// void cmd_clk_info(void){
+//clock//     clk_info();
+//clock// }
+
+//clock// // Печатает монотонное время прибора, в миллисекундах
+//clock// void cmd_uptime(void){
+//clock//     uptime();
+//clock// }
+
+
+/// DEVICE /// Информация о приборе ///
 // печатаем паспорт устройства
 void cmd_info(void) {
     device_info();
-}
-
-// печатаем строку журнала о версии прошивки
-void cmd_version(void) {
-    log_version();
-}
-
-// ping-pong
-void cmd_ping(void) {
-    printf("pong\n");
-}
-
-// Информация о внутреннем устройстве памяти устройства
-void cmd_mem_info(void) {
-    mem_info();
-}
-
-// Информация о динамической памяти устройства (RAM)
-void cmd_fw_info(void){
-    fw_info();
-}
-
-// Печатает в консоль информацию о структуре info_t (раскладка в памяти)
-void cmd_dev_info(void){
-    dev_info();
-}
-
-// Прибор читает память по числам, взятым из таблицы векторов (флеш-память)
-void cmd_boot_info(void){
-    boot_info();
-}
-
-// Модуль часов (инфо)
-void cmd_clk_info(void){
-    clk_info();
-}
-
-// Печатает монотонное время прибора, в миллисекундах
-void cmd_uptime(void){
-    uptime();
 }
 
 /// CALC_PI /// Объявление, описание функции перед main() ///
 // печатает значение π и время расчёта в миллисекундах
 void cmd_calc_pi(void);
 
+
 /// PROFILING ///
+// Печатает монотонное время прибора, в миллисекундах
+//  Монотонное время прибора ведёт таймер. Он прибавляет единицу раз в микросекунду, 
+//  начиная с момента сброса. Показание счёта возвращает функция time_us_64()
+void cmd_uptime(void){
+    // Печатает монотонное время прибора, в миллисекундах
+    printf("uptime: %llu ms\n", time_us_64() / 1000);
+    //  time_us_64() возвращает uint64_t. Такое число печатают через %llu. 
+    //  Деление на 1000 переводит микросекунды в миллисекунды.
+}
+
 // печатает среднее и максимальное время суперцикла
 void main_time_exec(void){
     printf("iteration avg %.2f us, max %u us\n", 
@@ -116,22 +126,22 @@ void main_time_reset(){
 
 // Массив команд для декодирования COM-порта
 const struct command_t commands[] = {
-    //button//{ "ena_|_ble"      , cmd_ena_|_ble    },  // вкл. светодиод
-    //button//{ "dis_|_able"     , cmd_dis_|_able   },  // выкл. светодиод
-    { "info"        , cmd_info      },  // паспорт устройства
-    { "version"     , cmd_version   },  // версия программы логирования
-    { "ping"        , cmd_ping      },  // ping-pong
-    { "mem_info"    , cmd_mem_info  },  // Информация о внутреннем устройстве памяти устройства
-    { "fw_info"     , cmd_fw_info   },  // Информация о динамической памяти устройства (RAM)
-    { "dev_info"    , cmd_dev_info  },  // Информация о о структуре info_t (раскладка в памяти)
-    { "boot_info"   , cmd_boot_info },  // Прибор читает память по числам, взятым из таблицы векторов (флеш-память)
-    { "clk_info"    , cmd_clk_info  },  // Модуль часов (инфо)
-    { "uptime"      , cmd_uptime    },  // Печатает монотонное время прибора, в миллисекундах
-    { "calc_pi"     , cmd_calc_pi   },  // Печатает значение π и время расчёта в миллисекундах
-    { "main_time_exec" , main_time_exec },// печатает среднее и максимальное время суперцикла
-    { "main_time_reset", main_time_reset},// обнуляет максимальное время суперцикла
-    { "clk_sys_low"    , clk_sys_low    },// Установить пониженную частоту процессора
-    { "clk_sys_default", clk_sys_default},// Установить частоту прочессора по умолчанию
+    //button// { "enable"          , cmd_enable        },  // вкл. светодиод
+    //button// { "disable"         , cmd_disable       },  // выкл. светодиод
+    //memory// { "mem_info"        , cmd_mem_info      },  // Информация о внутреннем устройстве памяти устройства
+    //memory// { "fw_info"         , cmd_fw_info       },  // Информация о динамической памяти устройства (RAM)
+    //memory// { "dev_info"        , cmd_dev_info      },  // Информация о структуре info_t (раскладка в памяти)
+    //memory// { "boot_info"       , cmd_boot_info     },  // Прибор читает память по числам, взятым из таблицы векторов (флеш-память)
+    //clock//  { "clk_info"        , cmd_clk_info      },  // Модуль часов (инфо)
+    //clock//  { "uptime"          , cmd_uptime        },  // Печатает монотонное время прибора, в миллисекундах
+    //clock//  { "clk_sys_low"     , clk_sys_low       },  // Установить пониженную частоту процессора
+    //clock//  { "clk_sys_default" , clk_sys_default   },  // Установить частоту прочессора по умолчанию
+    //log//    { "version"         , cmd_version       },  // версия программы логирования
+    { "info"            , cmd_info          },  // паспорт устройства
+    { "calc_pi"         , cmd_calc_pi       },  // Печатает значение π и время расчёта в миллисекундах
+    { "uptime"          , cmd_uptime        },  // Печатает монотонное время прибора, в миллисекундах
+    { "main_time_exec"  , main_time_exec    },  // печатает среднее и максимальное время суперцикла
+    { "main_time_reset" , main_time_reset   },  // обнуляет максимальное время суперцикла
 };
 // Общее количество команд (вычисляется и сохраняется в константу)
 const uint command_count = sizeof(commands) / sizeof(commands[0]);
@@ -277,12 +287,12 @@ int main()
     //button// // Инициализация вывода     // отдать вывод модулю GPIO
     //button// // Вывод работает на вход   // задать направление «вход»
     //button// // Подключаем к подтягивающему регистру
-    //button// gpio_init(BUT_|_TON_PIN);              // инициализируем пин кнопки
-    //button// gpio_set_dir(BUT_|_TON_PIN, GPIO_IN ); // настраиваем пин кнопки на вход
-    //button// gpio_pull_up(BUT_|_TON_PIN);           // подтягиваем кнопку к питанию
+    //button// gpio_init(BUTTON_PIN);              // инициализируем пин кнопки
+    //button// gpio_set_dir(BUTTON_PIN, GPIO_IN ); // настраиваем пин кнопки на вход
+    //button// gpio_pull_up(BUTTON_PIN);           // подтягиваем кнопку к питанию
 
     //button// // ТЕОРИЯ //
-    //button// // Пока кнопка не нажата, BUT_|_TON_PIN ни к чему не подключён — 
+    //button// // Пока кнопка не нажата, BUTTON_PIN ни к чему не подключён — 
     //button// // на нём нет ни нуля, ни единицы, и читаться будет случайный мусор. 
     //button// // Чтобы этого не было, внутри микроконтроллера есть подтягивающий резистор: 
     //button// // он мягко притягивает вывод к питанию, и незанятый вход читается как единица
@@ -307,10 +317,10 @@ int main()
         //button// // Проверяйте не состояние, а его смену. Суперцикл крутится тысячи раз в секунду. 
         //button// // Если переключать светодиод, пока кнопка нажата, он будет мигать всё время нажатия. 
         //button// // Переключать нужно в момент, когда вывод перешёл из единицы в ноль, то есть когда кнопку нажали:
-        //button// // bool current = gpio_get(BUT_|_TON_PIN);
+        //button// // bool current = gpio_get(BUTTON_PIN);
 
         //button// // Замена прямого чтения вывода (gpio_get) вызовом функции (get_but_||ton_debounce)
-        //button// bool current = get_but_|_ton_debounce(BUT_|_TON_PIN); // читаем состояние пина кнопки с задержкой
+        //button// bool current = get_button_debounce(BUTTON_PIN); // читаем состояние пина кнопки с задержкой
         //button// // Если кнопка нажата (false - нажата, true - отжата)
         //button// if (previous == true && current == false)       // проверяем, нужно ли переключить светодиод
         //button// {

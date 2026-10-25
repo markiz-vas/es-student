@@ -15,12 +15,12 @@
 #include "hardware/regs/sysinfo.h"      // смещение регистра и имена масок
 
 
-// Глобальная переменная с информацией о приборе
-struct info_t device_card = { 
-    .revision = 2,              // Заполнено от балды, с "uint32_t revision" не связано
-    .version  = 0x00010000,     // FIRMWARE_VERSION "1.0.0", по байту на версию
-    .name     = DEVICE_NAME     // Взято из device.h (имя ограничено 12 символами + '\0')
-};
+//device// // Глобальная переменная с информацией о приборе
+//device// struct info_t device_card = { 
+//device//     .revision = 2,              // Заполнено от балды, с "uint32_t revision" не связано
+//device//     .version  = 0x00010000,     // FIRMWARE_VERSION "1.0.0", по байту на версию
+//device//     .name     = DEVICE_NAME     // Взято из device.h (имя ограничено 12 символами + '\0')
+//device// };
 
 // Печатает в консоль информацию о плате
 void device_info(void)
@@ -59,61 +59,62 @@ void device_info(void)
 
 
 
-// Печатает в консоль информацию о структуре info_t (раскладка в памяти)
-void dev_info(void) 
-{
-    // шапка: объект, адрес, значение
-    printf("%-15s %-10s %5s %6s %-10s\n", 
-            "struct", "address", "size", "offset", "value");
+//device// // Печатает в консоль информацию о структуре info_t (раскладка в памяти)
+//device// void dev_info(void) 
+//device// {
+//device//     // шапка: объект, адрес, значение
+//device//     printf("%-15s %-10s %5s %6s %-10s\n", 
+//device//             "struct", "address", "size", "offset", "value");
+//device// 
+//device//     // Адрес переменной
+//device//     printf("%-15s 0x%08x %5u\n",
+//device//            "device_card", &device_card, sizeof(device_card));
+//device// 
+//device//     // ТЕОРИЯ // TASK 2.1.5 //
+//device//     // При последовательности revision, version, name размер структуры 24
+//device//     // При последовательности version, name, revision размер структуры 20
+//device// 
+//device//     // Поле версия (version)
+//device//     printf("- %-13s 0x%08x %5u %6u 0x%08x\n",
+//device//            "version",                           // имя поля
+//device//            &device_card.version,                // адрес поля
+//device//            sizeof(device_card.version),         // размер поля
+//device//            offsetof(struct info_t, version),    // Размер в структуре
+//device//            device_card.version);                // Значение поля
+//device//     
+//device//     // Поле версия (name)
+//device//     printf("- %-13s 0x%08x %5u %6u %s\n",
+//device//            "name",                              // имя поля
+//device//            device_card.name,                    // адрес поля
+//device//            sizeof(device_card.name),            // размер поля
+//device//            offsetof(struct info_t, name),       // Размер в структуре
+//device//            device_card.name);                   // Значение поля
+//device// 
+//device//     // Поле версия (revision)
+//device//     printf("- %-13s 0x%08x %5u %6u %u\n",
+//device//            "revision",                          // имя поля
+//device//            &device_card.revision,               // адрес поля
+//device//            sizeof(device_card.revision),        // размер поля
+//device//            offsetof(struct info_t, revision),   // Размер в структуре
+//device//            device_card.revision);               // Значение поля
+//device//     
+//device// 
+//device//     // ТЕОРИЯ // TASK 2.1.5 //
+//device//     // offsetof(тип, поле) возвращает расстояние в байтах от начала структуры до поля. 
+//device//     //  Считать его вручную — верный способ ошибиться: компилятор вправе расставить поля не так, 
+//device//     //  как вы предполагаете, и offsetof говорит, как он это сделал на самом деле.
+//device//     // ТЕОРИЯ // TASK 2.1.5 //
+//device//     //  У двух полей из трёх адрес берётся оператором &, а у массива — нет: 
+//device//     //  device_card.name и есть его адрес, & к нему не нужен. 
+//device//     //  Зато sizeof(device_card.name) даёт тринадцать — полный размер массива, 
+//device//     //  а не размер указателя и не длину строки внутри него. 
+//device//     //  Это две разные величины, и путать их дорого: strlen() вернул бы десять.
+//device// 
+//device//     // Размеры структуры (info_t)
+//device//     unsigned size_info_t = sizeof(device_card);
+//device//     unsigned size_fields = sizeof(device_card.version) + sizeof(device_card.name) + sizeof(device_card.revision);
+//device//     // Печать данных о памяти и размещении полей в структуре
+//device//     printf("%s %u, %s %u, %s %u\n",
+//device//            "fields", size_fields, "sizeof", size_info_t, "padding", size_info_t - size_fields);
+//device// }
 
-    // Адрес переменной
-    printf("%-15s 0x%08x %5u\n",
-           "device_card", &device_card, sizeof(device_card));
-
-    // ТЕОРИЯ // TASK 2.1.5 //
-    // При последовательности revision, version, name размер структуры 24
-    // При последовательности version, name, revision размер структуры 20
-
-    // Поле версия (version)
-    printf("- %-13s 0x%08x %5u %6u 0x%08x\n",
-           "version",                           // имя поля
-           &device_card.version,                // адрес поля
-           sizeof(device_card.version),         // размер поля
-           offsetof(struct info_t, version),    // Размер в структуре
-           device_card.version);                // Значение поля
-    
-    // Поле версия (name)
-    printf("- %-13s 0x%08x %5u %6u %s\n",
-           "name",                              // имя поля
-           device_card.name,                    // адрес поля
-           sizeof(device_card.name),            // размер поля
-           offsetof(struct info_t, name),       // Размер в структуре
-           device_card.name);                   // Значение поля
-
-    // Поле версия (revision)
-    printf("- %-13s 0x%08x %5u %6u %u\n",
-           "revision",                          // имя поля
-           &device_card.revision,               // адрес поля
-           sizeof(device_card.revision),        // размер поля
-           offsetof(struct info_t, revision),   // Размер в структуре
-           device_card.revision);               // Значение поля
-    
-
-    // ТЕОРИЯ // TASK 2.1.5 //
-    // offsetof(тип, поле) возвращает расстояние в байтах от начала структуры до поля. 
-    //  Считать его вручную — верный способ ошибиться: компилятор вправе расставить поля не так, 
-    //  как вы предполагаете, и offsetof говорит, как он это сделал на самом деле.
-    // ТЕОРИЯ // TASK 2.1.5 //
-    //  У двух полей из трёх адрес берётся оператором &, а у массива — нет: 
-    //  device_card.name и есть его адрес, & к нему не нужен. 
-    //  Зато sizeof(device_card.name) даёт тринадцать — полный размер массива, 
-    //  а не размер указателя и не длину строки внутри него. 
-    //  Это две разные величины, и путать их дорого: strlen() вернул бы десять.
-
-    // Размеры структуры (info_t)
-    unsigned size_info_t = sizeof(device_card);
-    unsigned size_fields = sizeof(device_card.version) + sizeof(device_card.name) + sizeof(device_card.revision);
-    // Печать данных о памяти и размещении полей в структуре
-    printf("%s %u, %s %u, %s %u\n",
-           "fields", size_fields, "sizeof", size_info_t, "padding", size_info_t - size_fields);
-}
