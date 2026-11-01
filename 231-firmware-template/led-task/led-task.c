@@ -2,7 +2,7 @@
 #include "led-task.h"
 // Работа со светодиодом на выводе LED_PIN
 //#include "led.h"
-// заголовочные файлы для sleep_ms, stdio_init_all
+// заголовочные файлы для stdio_init_all
 // ради типов SDK, [getchar_timeout_us], [PICO_ERROR_TIMEOUT], NULL, uint
 #include "pico/stdlib.h"
 // заголовочные файлы для gpio_init
@@ -166,6 +166,25 @@ void led_task_set_state(led_state_t state) {
 led_state_t led_task_get_state(void) {
     return led_state;
 }
+
+// Установить следующее состояние светодиода
+void led_task_next_state(void) {
+    switch (led_task_get_state()) {
+        case LED_STATE_OFF: {
+            led_task_set_state(LED_STATE_ON); 
+            break;
+        }//LED_STATE_OFF
+        case LED_STATE_ON: {
+            led_task_set_state(LED_STATE_BLINK); 
+            break;
+        }//LED_STATE_ON
+        case LED_STATE_BLINK: {
+            led_task_set_state(LED_STATE_OFF); 
+            break;
+        }//LED_STATE_BLINK
+    }//switch
+}
+
 
 // Установить период светодиода в состоянии LED_STATE_BLINK
 // Переключение происходит в функции led_task_handle через полупериод

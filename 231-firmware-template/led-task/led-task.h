@@ -24,6 +24,9 @@ void led_task_set_state(led_state_t state);
 // Вернуть состояние светодиода
 led_state_t led_task_get_state(void);
 
+// Установить следующее состояние светодиода
+void led_task_next_state(void);
+
 // Установить период светодиода в состоянии LED_STATE_BLINK
 // Переключение происходит в функции led_task_handle через полупериод
 // false — период не принят, период (ms, милисекунды, 10-3)

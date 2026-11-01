@@ -17,6 +17,8 @@
 #include "profiling.h"
 // заголовочный файл состояния светодиода: выключен, горит или мигает
 #include "led-task.h"
+// заголовочный файл задача кнопки: нажатие, переключение состояния светодиода
+#include "button-task.h"
 
 
 // Число без знака из десятичной записи. false — в записи не только цифры
@@ -222,6 +224,17 @@ static void cmd_led_period(const command_t *command) {
 }
 /// LED-TASK /// END ///
 
+/// BUTTON-TASK ///
+// Состояние кнопки и число нажатий
+// выводит состояние кнопки и число нажатий с момента сброса
+static void cmd_button(const command_t *command) {
+    // Состояние кнопки
+    char* button_txt = button_task_is_pressed() ? "pressed" : "released";
+    // Число нажатий
+    uint32_t button_count = button_task_get_press_count();
+    // Вывод
+    printf("button: %s, presses %u\n", button_txt, (unsigned)button_count);
+}
 
 // Массив команд для декодирования COM-порта
 const api_command_t api_commands[] = {
@@ -232,6 +245,7 @@ const api_command_t api_commands[] = {
     {"led_disable"      , "disable led (off)"                       , cmd_led_disable       },  // Выключить светодиод (потух)
     {"led_blink"        , "make led blink (period in ms)"           , cmd_led_blink         },  // Моргание светодиода (моргает)
     {"led_period"       , "set period blink in ms"                  , cmd_led_period        },  // Установить период светодиода в милисекундах (ms)
+    {"button"           , "button status and count of presses"      , cmd_button            },  // Состояние кнопки и число нажатий
     {"calc_pi"          , "calculate pi: calc_pi [terms]"           , cmd_calc_pi           },  // Печатает значение π и время расчёта в миллисекундах
     {"main_time_exec"   , "superloop iteration: average and maximum", cmd_main_time_exec    },  // Печатает среднее и максимальное время суперцикла
     {"main_time_reset"  , "reset maximum iteration"                 , cmd_main_time_reset   },  // Обнуляет максимальное время суперцикла

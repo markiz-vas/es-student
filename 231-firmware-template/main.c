@@ -4,6 +4,8 @@
 #include <string.h>
 // заголовочный файл задача светодиода: выключен, горит или мигает
 #include "led-task.h"
+// заголовочный файл задача кнопки: нажатие, переключение состояния светодиода
+#include "button-task.h"
 // заголовочный файл для лога ошибок #include "logging\log.h"
 #include "log.h"
 // заголовочный файл лога информации о приборе #include "device\device.h"
@@ -14,7 +16,7 @@
 #include "stdio-text-protocol.h"
 // заголовочный файл протокола api
 #include "api.h"
-// заголовочные файлы для sleep_ms, stdio_init_all
+// заголовочные файлы для stdio_init_all
 // ради типов SDK, [getchar_timeout_us], [PICO_ERROR_TIMEOUT], NULL, uint
 #include "pico/stdlib.h"
 
@@ -24,21 +26,6 @@
 //memory// #include "memory.h"
 //clock// // // заголовочный файл модуля часов "clock\clock.h"
 //clock// // #include "clock.h"
-
-//button// // Нормер выхода
-//button// const uint BUTTON_PIN = 15;
-
-//button// // Константа 20mc для борьбы с дребезгом
-//button// const uint DEBOUNCE_MS = 20;
-
-//button// // Функция определяет, был ли дребезг
-//button// // Считывает два значение, возвращает true, если оба true
-//button// bool get_button_debounce(uint pin)
-//button// {
-//button//     bool state = gpio_get(pin);     // Считали первое значение
-//button//     sleep_ms(DEBOUNCE_MS);          // подождали DEBOUNCE_MS
-//button//     return state && gpio_get(pin);  // Считали второе значение
-//button// }
 
 /// COMAND READER /// BEGEN ///
 // Буфер и его длина (32 символа) (глобальная переменная)
@@ -110,25 +97,13 @@ int main()
     // ведь и print_f() на месте, и канал формально существует,
     // просто он не попал в образ или не был включён.
 
+    // led-task //
     // Инициализация, настраивает вывод на выход, устанавливает состояние светодиода
     led_task_init();
 
-    //button// // Инициализация вывода     // отдать вывод модулю GPIO
-    //button// // Вывод работает на вход   // задать направление «вход»
-    //button// // Подключаем к подтягивающему регистру
-    //button// gpio_init(BUTTON_PIN);              // инициализируем пин кнопки
-    //button// gpio_set_dir(BUTTON_PIN, GPIO_IN ); // настраиваем пин кнопки на вход
-    //button// gpio_pull_up(BUTTON_PIN);           // подтягиваем кнопку к питанию
-
-    //button// // ТЕОРИЯ //
-    //button// // Пока кнопка не нажата, BUTTON_PIN ни к чему не подключён —
-    //button// // на нём нет ни нуля, ни единицы, и читаться будет случайный мусор.
-    //button// // Чтобы этого не было, внутри микроконтроллера есть подтягивающий резистор:
-    //button// // он мягко притягивает вывод к питанию, и незанятый вход читается как единица
-
-    //button// // previous - что вывод показывал на прошлом шаге цикла (нужно для кнопки)
-    //button// bool previous = false;
-
+    // button-task //
+    // Инициализация, настраивает вывод на вход
+    button_task_init();
 
 
     // profiling //
@@ -151,25 +126,11 @@ int main()
         // учитываем прошлую итерацию
         profiling_iteration();
 
-        //button// // Проверяйте не состояние, а его смену. Суперцикл крутится тысячи раз в секунду.
-        //button// // Если переключать светодиод, пока кнопка нажата, он будет мигать всё время нажатия.
-        //button// // Переключать нужно в момент, когда вывод перешёл из единицы в ноль, то есть когда кнопку нажали:
-        //button// // bool current = gpio_get(BUTTON_PIN);
+        // button-task //
+        // Отработка задачи кнопки
+        button_task_handle();
 
-        //button// // Замена прямого чтения вывода (gpio_get) вызовом функции (get_but_||ton_debounce)
-        //button// bool current = get_button_debounce(BUTTON_PIN); // читаем состояние пина кнопки с задержкой
-        //button// // Если кнопка нажата (false - нажата, true - отжата)
-        //button// if (previous == true && current == false)       // проверяем, нужно ли переключить светодиод
-        //button// {
-        //button//     // Переключить светодиод
-        //button//     led_toggle();
-        //button//     // Вывод сообщения через кабель usb в виртуальный COM-port
-        //button//     LOG_INF("led %s\n", led_is_on() ? "on" : "off");
-        //button// }
-        //button// // Запоминаем, что нажато было раньше (чтобы не мигала)
-        //button// previous = current;     // запоминаем текущее состояние пина кнопки, как предыдущее
-
-        //blink//
+        // led-task //
         // Отработка задачи светодиода по состоянию
         led_task_handle();
 
