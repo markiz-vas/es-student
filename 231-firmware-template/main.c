@@ -8,10 +8,13 @@
 #include "log.h"
 // заголовочный файл лога информации о приборе #include "device\device.h"
 #include "device.h"
-// заголовочный файл информации Структура с названием и ссылкой на функцию команды
-#include "command.h"
 // заголовочный файл модуля профилирования (время суперцикла)
 #include "profiling.h"
+// заголовочный файл информации Структура с названием и ссылкой на функцию команды
+#include "command.h"
+// заголовочный файл протокола обмена текстовыми командами
+#include "stdio-text-protocol.h"
+
 
 // TASK 2.3.1// dell memory, clock //
 //memory// // заголовочный файл информации о памяти устройства #include "memory\memory.h"
@@ -125,7 +128,7 @@ void main_time_reset(){
 
 
 // Массив команд для декодирования COM-порта
-const struct command_t commands[] = {
+const struct old_command_t old_commands[] = {
     //button// { "enable"          , cmd_enable        },  // вкл. светодиод
     //button// { "disable"         , cmd_disable       },  // выкл. светодиод
     //memory// { "mem_info"        , cmd_mem_info      },  // Информация о внутреннем устройстве памяти устройства
@@ -144,17 +147,17 @@ const struct command_t commands[] = {
     { "main_time_reset" , main_time_reset   },  // обнуляет максимальное время суперцикла
 };
 // Общее количество команд (вычисляется и сохраняется в константу)
-const uint command_count = sizeof(commands) / sizeof(commands[0]);
+const uint old_command_count = sizeof(old_commands) / sizeof(old_commands[0]);
 
 
 // Разбирает команду и вызывает функцию по указателю
 void handle_command(const char *command)
 {
     // Расшифровка команд по массиву команд
-    for (uint i = 0; i < command_count; i++) {          // цикл по массиву
-        if (strcmp(command, commands[i].name) == 0) {   // в массиве есть команда
-            if (commands[i].handler != NULL) {          // ссылка на функцию не пустая
-                commands[i].handler();                  // вызов функции по указателю
+    for (uint i = 0; i < old_command_count; i++) {          // цикл по массиву
+        if (strcmp(command, old_commands[i].name) == 0) {   // в массиве есть команда
+            if (old_commands[i].handler != NULL) {          // ссылка на функцию не пустая
+                old_commands[i].handler();                  // вызов функции по указателю
             } else {
                 LOG_ERR("NULL handler, command: %s\n", command);
             }// NULL
@@ -306,6 +309,11 @@ int main()
     // запоминаем начальное показание часов для профилирования
     profiling_init();
 
+
+    // text-protocol //
+    // Инициализация протокола через usb
+    stdio_text_protocol_init();
+
     // Бесконечный цикл (Суперцикл) - это обязательное условие,
     // Так как все программы запускаются на Земле 1 раз
     while (1)
@@ -344,7 +352,24 @@ int main()
         // if (c != PICO_ERROR_TIMEOUT) { print_f("got %c\n", (char)c); } // PICO_ERROR_TIMEOUT означает «символов не было»
 
         // Считываем строку на вход
-        read_line();
+        //read_line();
+        const command_t *test = stdio_text_protocol_handle();
+        if (test == NULL) continue;
+        if (test->name == "") continue;
+
+        // test //
+        LOG_DBG("got %s\n", test->name);  // Печать строки целиком
+        LOG_DBG("name      %s\n", test->name);
+        LOG_DBG("argc      %d\n", test->argc);
+        LOG_DBG(test->argv[0] ? "argv[0]   %s\n" : "argv[0]   %p\n", test->argv[0]);
+        LOG_DBG(test->argv[1] ? "argv[1]   %s\n" : "argv[1]   %p\n", test->argv[1]);
+        LOG_DBG(test->argv[2] ? "argv[2]   %s\n" : "argv[2]   %p\n", test->argv[2]);
+        LOG_DBG(test->argv[3] ? "argv[3]   %s\n" : "argv[3]   %p\n", test->argv[3]);
+        LOG_DBG("truncated %d\n", test->truncated);
+        LOG_DBG("\n");
+
+        handle_command(test->name);       // расшифровка команды
+
 
     }// Суперцикл
 }
