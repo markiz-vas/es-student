@@ -63,8 +63,8 @@ void api_handle(const command_t *command)
 void api_print_debug_command(const command_t *command)
 {
     // test //
-    LOG_DBG("name      %s\n", command->name);
-    LOG_DBG("argc      %d\n", command->argc);
+    LOG_DBG("name      %s\n",           command->name);
+    LOG_DBG("argc      %u\n", (unsigned)command->argc);
     LOG_DBG(command->argv[0] ? "argv[0]   %s\n" : "argv[0]   %p\n", command->argv[0]);
     LOG_DBG(command->argv[1] ? "argv[1]   %s\n" : "argv[1]   %p\n", command->argv[1]);
     LOG_DBG(command->argv[2] ? "argv[2]   %s\n" : "argv[2]   %p\n", command->argv[2]);

@@ -15,6 +15,8 @@
 #include "device.h"
 // заголовочный файл модуля профилирования (время суперцикла)
 #include "profiling.h"
+// заголовочный файл состояния светодиода: выключен, горит или мигает
+#include "led-task.h"
 
 
 // Число без знака из десятичной записи. false — в записи не только цифры
@@ -151,6 +153,75 @@ static void cmd_main_time_reset(const command_t *command) {
     printf("%s", "max reset\n");    // Эхо-вывод
 }
 
+/// LED-TASK /// SATART ///
+// вывод состояния светодиода
+static void led_state_print(void) {
+    // Состояние светодиода
+    char* led_state_txt = "unnoun";
+    switch (led_task_get_state()) {
+    case LED_STATE_ON:    led_state_txt = "on"   ;  break;
+    case LED_STATE_OFF:   led_state_txt = "off"  ;  break;
+    case LED_STATE_BLINK: led_state_txt = "blink";  break;
+    }//switch
+
+    // Период светодиода (ms, милисекунды, 10-3)
+    uint32_t period_ms = led_task_get_period_ms();
+
+    // Печать справки по светодиду
+    printf("led: %s, period %d ms\n", 
+            led_state_txt, (unsigned)period_ms);
+}
+
+// включить светодиод (горит)
+static void cmd_led_enable(const command_t *command) {
+    // Установить состояние светодиода
+    led_task_set_state(LED_STATE_ON);
+    led_state_print(); // вывод состояния светодиода
+}
+
+// выключить светодиод (погас)
+static void cmd_led_disable(const command_t *command) {
+    // Установить состояние светодиода
+    led_task_set_state(LED_STATE_OFF);
+    led_state_print(); // вывод состояния светодиода
+}
+
+// моргание светодиода (моргает)
+static void cmd_led_blink(const command_t *command) {
+    // Установить состояние светодиода
+    led_task_set_state(LED_STATE_BLINK);
+    led_state_print(); // вывод состояния светодиода
+}
+
+// установить период светодиода в милисекундах (ms)
+static void cmd_led_period(const command_t *command) {
+    // Аргумент <period_ms> обязателен
+    if (command->argc != 2) {
+        printf("error: usage led_period <period_ms>\n"); //ошибка
+        return; //ранний выход с ошибкой
+    }
+
+    // Период светодиода
+    uint32_t period_ms;   // Сюда возвращается число
+    // Проверка на число и перевод строки в число
+    bool isNumber = parse_u32(command->argv[0], &period_ms);
+
+    // Это число? или введена только команда calc_pi (argc = 1)
+    if (isNumber) {
+        // Установить период светодиода (period_ms != 0)
+        if (led_task_set_period_ms(period_ms)) {
+            led_state_print(); // вывод состояния светодиода (успех)
+        }else {
+            printf("error: period_ms must be greater than 0\n"); //ошибка
+        }    
+    } else {
+        // Второй аргумент должен быть числом (число больше нуля)
+        printf("error: usage led_period <period_ms>\n"); //ошибка
+        //printf("error: usage led_period <period_ms> [%s]\n", command->argv[0]);
+    }
+}
+/// LED-TASK /// END ///
+
 
 // Массив команд для декодирования COM-порта
 const api_command_t api_commands[] = {
@@ -160,7 +231,14 @@ const api_command_t api_commands[] = {
     {"uptime"           , "time since reset"                        , cmd_uptime            },  // Печатает монотонное время прибора, в миллисекундах
     {"main_time_exec"   , "superloop iteration: average and maximum", cmd_main_time_exec    },  // Печатает среднее и максимальное время суперцикла
     {"main_time_reset"  , "reset maximum iteration"                 , cmd_main_time_reset   },  // Обнуляет максимальное время суперцикла
+    {"led_enable"       , "enable led (on)"                         , cmd_led_enable        },  // Включить светодиод (горит)
+    {"led_disable"      , "disable led (off)"                       , cmd_led_disable       },  // Выключить светодиод (потух)
+    {"led_blink"        , "make led blink (period in ms)"           , cmd_led_blink         },  // Моргание светодиода (моргает)
+    {"led_period"       , "set period blink in ms"                  , cmd_led_period        },  // Установить период светодиода в милисекундах (ms)
 };
 
 // Общее количество команд (вычисляется и сохраняется в константу)
 const uint api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);
+
+
+
