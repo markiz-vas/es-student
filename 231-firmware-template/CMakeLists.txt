@@ -33,6 +33,8 @@ add_executable(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/device/device.c
    ${CMAKE_CURRENT_SOURCE_DIR}/profiling/profiling.c
    ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol/stdio-text-protocol.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/api/api.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/api/api-callbacks.c
 
    #TASK 2.3.1# # dellete files from project "231-firmware-template"
    # ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory.c 
@@ -48,6 +50,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
    ${CMAKE_CURRENT_SOURCE_DIR}/device
    ${CMAKE_CURRENT_SOURCE_DIR}/profiling
    ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol
+   ${CMAKE_CURRENT_SOURCE_DIR}/api
 
    #TASK 2.3.1# # dellete files from project "231-firmware-template"
    # ${CMAKE_CURRENT_SOURCE_DIR}/memory
