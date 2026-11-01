@@ -12,13 +12,20 @@
 // Нормер выхода
 static const uint BUTTON_PIN = 15;
 
-// Константа 20mc для борьбы с дребезгом
-static const uint DEBOUNCE_MS = 20;
+
+// Таблица состояний кнопки (тип)
+typedef enum {
+    BUTTON_STATE_OFF    ,   // 0 - отпущена
+    BUTTON_STATE_OFF_END,   // 1 - нажатие?
+    BUTTON_STATE_ON     ,   // 2 - нажата
+    BUTTON_STATE_ON_END ,   // 3 - отпускание?
+} button_state_t;
 
 // Состояние кнопки
 static button_state_t button_state;
 // Ожидание для кнопки (mks, микросекунды, 10-6)
-static uint64_t debounce_us = DEBOUNCE_MS * 1000;
+// Константа 20mc для борьбы с дребезгом
+static const uint64_t debounce_us = 20 * 1000;
 // Последнее время (mks, микросекунды, 10-6)
 static uint64_t last_toggle_us;
 

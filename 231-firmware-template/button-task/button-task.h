@@ -7,14 +7,6 @@
 // ради типа uintptr_t, uint32_t, uint16_t, uint8_t
 #include <stdint.h>
 
-// Таблица состояний кнопки (тип)
-typedef enum {
-    BUTTON_STATE_OFF    ,   // 0 - отпущена
-    BUTTON_STATE_OFF_END,   // 1 - нажатие?
-    BUTTON_STATE_ON     ,   // 2 - нажата
-    BUTTON_STATE_ON_END ,   // 3 - отпускание?
-} button_state_t;
-
 // Инициализация, настраивает вывод на вход
 void button_task_init(void);
 // Отработка задачи кнопки по состоянию
