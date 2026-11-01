@@ -13,7 +13,7 @@
 // Локальная функция вызывающая список всех команд
 static void help(void)
 {
-    printf("help\n");
+    // printf("help\n");
     printf("%-16s %s\n", "help", "list of commands");
 
     // Вывод всех команд

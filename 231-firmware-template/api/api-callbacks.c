@@ -227,14 +227,14 @@ static void cmd_led_period(const command_t *command) {
 const api_command_t api_commands[] = {
     // "имя команды"    , "описание команды (латиница!)"            , функция-обратный вызов},  // Описание команды (кирилица!)
     {"info"             , "device passport"                         , cmd_info              },  // Паспорт устройства
-    {"calc_pi"          , "calculate pi: calc_pi [terms]"           , cmd_calc_pi           },  // Печатает значение π и время расчёта в миллисекундах
     {"uptime"           , "time since reset"                        , cmd_uptime            },  // Печатает монотонное время прибора, в миллисекундах
-    {"main_time_exec"   , "superloop iteration: average and maximum", cmd_main_time_exec    },  // Печатает среднее и максимальное время суперцикла
-    {"main_time_reset"  , "reset maximum iteration"                 , cmd_main_time_reset   },  // Обнуляет максимальное время суперцикла
     {"led_enable"       , "enable led (on)"                         , cmd_led_enable        },  // Включить светодиод (горит)
     {"led_disable"      , "disable led (off)"                       , cmd_led_disable       },  // Выключить светодиод (потух)
     {"led_blink"        , "make led blink (period in ms)"           , cmd_led_blink         },  // Моргание светодиода (моргает)
     {"led_period"       , "set period blink in ms"                  , cmd_led_period        },  // Установить период светодиода в милисекундах (ms)
+    {"calc_pi"          , "calculate pi: calc_pi [terms]"           , cmd_calc_pi           },  // Печатает значение π и время расчёта в миллисекундах
+    {"main_time_exec"   , "superloop iteration: average and maximum", cmd_main_time_exec    },  // Печатает среднее и максимальное время суперцикла
+    {"main_time_reset"  , "reset maximum iteration"                 , cmd_main_time_reset   },  // Обнуляет максимальное время суперцикла
 };
 
 // Общее количество команд (вычисляется и сохраняется в константу)
