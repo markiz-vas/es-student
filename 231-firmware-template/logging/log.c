@@ -13,5 +13,6 @@ void log_version(void)
 // Печатает подпись перед текстом сообщения (в LOG_ERR, LOG_INF, LOG_DBG)
 void log_prefix(const char *level, const char *function, int line)
 {
+    //<уровень> SP <функция>:<строка> SP <текст> CR LF
     printf("%s %s:%d ", level, function, line);
 }

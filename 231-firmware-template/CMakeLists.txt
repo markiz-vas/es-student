@@ -28,14 +28,16 @@ pico_sdk_init()
 # из перечисленных исходных файлов. (*.c)
 add_executable(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/main.c
-   ${CMAKE_CURRENT_SOURCE_DIR}/led/led.c
    ${CMAKE_CURRENT_SOURCE_DIR}/logging/log.c
    ${CMAKE_CURRENT_SOURCE_DIR}/device/device.c
    ${CMAKE_CURRENT_SOURCE_DIR}/profiling/profiling.c
    ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol/stdio-text-protocol.c
    ${CMAKE_CURRENT_SOURCE_DIR}/api/api.c
    ${CMAKE_CURRENT_SOURCE_DIR}/api/api-callbacks.c
-
+   ${CMAKE_CURRENT_SOURCE_DIR}/led-task/led-task.c
+   
+   #TASK 2.3.2# # dellete files from project "231-firmware-template"
+   # ${CMAKE_CURRENT_SOURCE_DIR}/led/led.c
    #TASK 2.3.1# # dellete files from project "231-firmware-template"
    # ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory.c 
    # ${CMAKE_CURRENT_SOURCE_DIR}/clock/clock.c
@@ -45,13 +47,15 @@ add_executable(${PROJECT_NAME}
 # Слово PRIVATE означает, что путь нужен только при сборке этой цели и никуда дальше не передаётся.
 target_include_directories(${PROJECT_NAME} PRIVATE
    ${CMAKE_CURRENT_SOURCE_DIR}            # для поиска *.h в корневой папки и подпапок
-   ${CMAKE_CURRENT_SOURCE_DIR}/led
    ${CMAKE_CURRENT_SOURCE_DIR}/logging
    ${CMAKE_CURRENT_SOURCE_DIR}/device
    ${CMAKE_CURRENT_SOURCE_DIR}/profiling
    ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol
    ${CMAKE_CURRENT_SOURCE_DIR}/api
-
+   ${CMAKE_CURRENT_SOURCE_DIR}/led-task
+   
+   #TASK 2.3.2# # dellete files from project "231-firmware-template"
+   # ${CMAKE_CURRENT_SOURCE_DIR}/led
    #TASK 2.3.1# # dellete files from project "231-firmware-template"
    # ${CMAKE_CURRENT_SOURCE_DIR}/memory
    # ${CMAKE_CURRENT_SOURCE_DIR}/clock
@@ -64,6 +68,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME}
    pico_stdlib       
    pico_unique_id    
+
+   # pico_w
    # pico_cyw43_arch_none     # we need Wifi to access the GPIO, but we don't need anything else
 )
 

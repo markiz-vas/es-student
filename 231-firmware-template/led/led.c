@@ -1,5 +1,7 @@
-// заголовочный файл светодиода
+// Работа со светодиодом на выводе LED_PIN
 #include "led.h"
+// заголовочные файлы для sleep_ms, stdio_init_all
+#include "pico/stdlib.h"
 // заголовочные файлы для gpio_init
 // заголовочные файлы для gpio_set_dir, gpio_put 
 #include "hardware/gpio.h"
@@ -9,7 +11,7 @@
 
 
 // Нормер выхода светодиода
-const uint LED_PIN = 16;
+static const uint32_t LED_PIN = 16;
 
 // Слово static перед переменной означает, что она видна только внутри этого файла. 
 // Состояние светодиода — дело модуля, и лезть в него снаружи никто не должен; 
@@ -50,7 +52,7 @@ bool led_is_on(void)
 }
 
 // возвращает номер вывода светодиода
-uint led_pin(void)
+uint32_t led_pin(void)
 {
     return LED_PIN;
 }

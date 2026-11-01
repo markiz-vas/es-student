@@ -94,8 +94,10 @@ static void cmd_calc_pi(const command_t *command) {
     // Проверка на число и перевод строки в число
     bool isNumber = parse_u32(command->argv[0], &members_qty);
 
-    // Это число?
-    if (isNumber) {
+    // Это число? или введена только команда calc_pi (argc = 1)
+    if (isNumber || command->argc == 1) {
+        // Значение по умолчанию (аргумент не задан)
+        if (command->argc == 1) members_qty = CALC_PI_TERMS;
         // Число больше нуля?
         if (members_qty > 0) {
             // Запуск вычисления π, Сохранение времени вычисления

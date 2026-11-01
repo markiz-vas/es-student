@@ -1,10 +1,13 @@
+// led.h — Работа со светодиодом на выводе LED_PIN
 //#ifndef LED_H
 //#define LED_H
 //Защита от повторного включения (англ. include guard) 
 #pragma once
 
-// заголовочные файлы для sleep_ms, stdio_init_all
-#include "pico/stdlib.h"
+// ради типа bool
+#include <stdbool.h>
+// ради типа uintptr_t, uint32_t, uint16_t, uint8_t
+#include <stdint.h>
 
 // Инициализация, настраивает вывод на выход и гасит/зажигает светодиод
 void led_init(void);
@@ -15,6 +18,6 @@ void led_toggle(void);
 // возвращает состояние светодиода (выставленный уровень)
 bool led_is_on(void);
 // возвращает номер вывода светодиода
-uint led_pin(void);
+uint32_t led_pin(void);
 
 //#endif
