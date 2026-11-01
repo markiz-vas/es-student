@@ -187,7 +187,8 @@ bool period_elapsed(uint64_t *last_us, uint64_t period_us)
 
     // Отстали больше чем на период: не догонять, а начать отсчёт заново
     if (now_us - *last_us >= period_us) {
-        *last_us = now_us;  // сохраняем текущее время
+        // сохраняем текущее время
+        *last_us = now_us;
     }
 
     // Время прошло
