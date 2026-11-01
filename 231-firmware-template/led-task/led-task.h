@@ -40,4 +40,4 @@ uint32_t led_pin(void);
 // Времена в микросекундах
 // Если Время прошло, то обновляем последнее время
 // true - необходимое время прошло, false - время ещё не прошло
-bool period_elapsed(uint64_t *last_us, uint64_t period_us);
+// bool period_elapsed(uint64_t *last_us, uint64_t period_us);
