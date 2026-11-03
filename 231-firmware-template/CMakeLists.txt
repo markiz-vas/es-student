@@ -42,6 +42,7 @@ add_executable(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/api/api-callbacks.c
    ${CMAKE_CURRENT_SOURCE_DIR}/led-task/led-task.c
    ${CMAKE_CURRENT_SOURCE_DIR}/button-task/button-task.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/pi-task/pi-task.c
 
    #TASK 2.3.2# # dellete files from project "231-firmware-template"
    # ${CMAKE_CURRENT_SOURCE_DIR}/led/led.c
@@ -61,6 +62,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
    ${CMAKE_CURRENT_SOURCE_DIR}/api
    ${CMAKE_CURRENT_SOURCE_DIR}/led-task
    ${CMAKE_CURRENT_SOURCE_DIR}/button-task
+   ${CMAKE_CURRENT_SOURCE_DIR}/pi-task
 
    #TASK 2.3.2# # dellete files from project "231-firmware-template"
    # ${CMAKE_CURRENT_SOURCE_DIR}/led
@@ -86,8 +88,8 @@ target_link_libraries(${PROJECT_NAME}
 # Определение макросов (#define <name> <значение>), формат: <name>=<значение> [ВНИМАНИЕ: пробелы недопустимы]
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     DEVICE_BOARD="${PICO_BOARD}" # Имя проекта
-   #LOG_LEVEL=LOG_LEVEL_INF      # Уровень лога
-    LOG_LEVEL=LOG_LEVEL_DBG      # Уровень лога
+    LOG_LEVEL=LOG_LEVEL_INF      # Уровень лога
+   #LOG_LEVEL=LOG_LEVEL_DBG      # Уровень лога
 )
 
 #TASK 2.3.1# # dellete file "memmap_rp2040.ld" from project "231-firmware-template"

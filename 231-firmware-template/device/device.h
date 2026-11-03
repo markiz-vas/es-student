@@ -1,4 +1,4 @@
-//Защита от повторного включения (англ. include guard) 
+//device.h // заголовочный файл лога информации о приборе #include "device\device.h"
 #pragma once
 
 // ради типа uintptr_t, uint32_t, uint16_t, uint8_t
@@ -8,7 +8,7 @@
 // #define DEVICE_NAME "es-led-module" // для 12 байт имя "es-led-module" великовато (нужно 14 байт)
 #define DEVICE_NAME "es-cmd-usb"
 #define FIRMWARE_VERSION "1.2.0"
-#define TASK_INFO "п2.3.3 Кнопка без ожидания (TASK p.2.3.3)"
+#define TASK_INFO "п2.3.4 Расчёт по шагам (TASK p.2.3.4)"
 
 // Информация о проекте
 #define DEVICE_PROJECT "231-firmware-template"

@@ -19,6 +19,8 @@
 #include "led-task.h"
 // заголовочный файл задача кнопки: нажатие, переключение состояния светодиода
 #include "button-task.h"
+// Заголовочный файл задачи вычисления π (пи) с прерыванием на другие процессы
+#include "pi-task.h"
 
 
 // Число без знака из десятичной записи. false — в записи не только цифры
@@ -64,36 +66,9 @@ static bool parse_u32(const char *text, uint32_t *value)
 
 
 /// CALC_PI /// SATART ///
-// calc_pi // TASK 2.2.3 //
-// прикидка: за член ряда 4 операции с double, 175 + 110 + 190 + 110 = 585 тактов;
-// 1 000 000 членов по 585 тактов при 125 МГц — около 4,7 с (4,68 с)
-static const uint CALC_PI_TERMS = 1000000;
-
-// ТЕОРИЯ // TASK 2.2.3 //
-// Без слова 'volatile' компилятор вправе перенести расчёт за второе чтение часов. 
-//  Результат от этого не изменится, но замер измерит пустое место. 
-//  Запись в volatile компилятор не переносит, и расчёт остаётся между двумя чтениями. 
-static volatile double pi_result;
-
-// Вычисление ПИ, суммирует ряд Лейбница
-static double calc_pi(uint terms) {
-    // сумма ряда и знак очередного члена, оба double
-    double sum  = 0.0;
-    double sign = 1.0;
-    // для k от 0 до terms: прибавить к сумме sign / (2k + 1) и сменить знак
-    for (int k = 0; k < terms; k++) {
-        // Прибавить очередной член ряда: ±1 / (2k + 1)
-        sum += sign / (2.0 * k + 1.0);
-        sign = -sign;
-    }
-    // Сумма ряда равна π/4
-    return 4.0 * sum;           // вернуть сумму, умноженную на 4
-}
-
-/// CALC_PI /// Объявление, описание функции перед main() ///
-// печатает значение π и время расчёта в миллисекундах
-// аргумент команды обязателен! Должен быть больше 0!
-static void cmd_calc_pi(const command_t *command) {
+// Старт вычисления  π 
+// аргумент команды не обязателен! Должен быть больше 0! И Числом до 4 294 967 295
+static void cmd_pi_start(const command_t *command) {
     uint32_t members_qty;   // Сюда возвращается число
     // Проверка на число и перевод строки в число
     bool isNumber = parse_u32(command->argv[0], &members_qty);
@@ -101,25 +76,48 @@ static void cmd_calc_pi(const command_t *command) {
     // Это число? или введена только команда calc_pi (argc = 1)
     if (isNumber || command->argc == 1) {
         // Значение по умолчанию (аргумент не задан)
-        if (command->argc == 1) members_qty = CALC_PI_TERMS;
+        if (command->argc == 1) members_qty = pi_task_calc_terms();
         // Число больше нуля?
         if (members_qty > 0) {
-            // Запуск вычисления π, Сохранение времени вычисления
-            uint64_t start_us = time_us_64();
-            pi_result = calc_pi(members_qty);
-            uint64_t spent_us = time_us_64() - start_us;
+            // Запуск вычисления π 
+            bool isRes = pi_task_start(members_qty);
 
-            // Вывод результатов вычисления
-            printf("pi: %.9f\n", pi_result);
-            printf("time: %llu ms\n", spent_us / 1000);
+            // Вывод информации о старте или ошибки, если вычисление уже идёт            
+            if (isRes)  printf("pi: started, %u terms\n", (unsigned)members_qty);
+            else        printf("error: pi is busy\n");
         } else {
             // Точность должна быть больше нуля
             printf("error: terms must be gerater than 0\n");
         }
     } else {
         // Второй аргумент должен быть числом (число больше нуля)
-        printf("error: usage calc_pi [%s]\n", command->argv[0]);
+        printf("error: usage pi_start [%s]\n", command->argv[0]);
+        // printf("error: usage pi_start [terms]\n");
     }
+}
+
+// печатает значение π и время расчёта в миллисекундах
+static void cmd_pi(const command_t *command) {
+    // Получаемые значения
+    double   pi   = 0; 
+    uint32_t time = 0;
+    // получение результата
+    bool isRes = pi_task_get_result(&pi, &time);
+
+    // Вычисления не начинались
+    if (!isRes) {
+        printf("pi: not started\n");
+        return; // ранний выход
+    }
+
+    // Идут вычисления
+    if ((pi == 0) && (time == 0)) {
+        printf("pi: running\n");
+        return; // ранний выход
+    }
+
+    // Вывод результатов вычисления
+    printf("pi: %.9f in %u ms\n", pi, (unsigned)time);
 }
 /// CALC_PI /// END ///
 
@@ -244,9 +242,10 @@ const api_command_t api_commands[] = {
     {"led_enable"       , "enable led (on)"                         , cmd_led_enable        },  // Включить светодиод (горит)
     {"led_disable"      , "disable led (off)"                       , cmd_led_disable       },  // Выключить светодиод (потух)
     {"led_blink"        , "make led blink (period in ms)"           , cmd_led_blink         },  // Моргание светодиода (моргает)
-    {"led_period"       , "set period blink in ms"                  , cmd_led_period        },  // Установить период светодиода в милисекундах (ms)
+    {"led_period"       , "set period blink in ms: led_period (ms)" , cmd_led_period        },  // Установить период светодиода в милисекундах (ms)
     {"button"           , "button status and count of presses"      , cmd_button            },  // Состояние кнопки и число нажатий
-    {"calc_pi"          , "calculate pi: calc_pi [terms]"           , cmd_calc_pi           },  // Печатает значение π и время расчёта в миллисекундах
+    {"pi_start"         , "start calculate pi: pi_start [terms]"    , cmd_pi_start          },  // Старт вычисления  π 
+    {"pi"               , "print pi and time calc in ms"            , cmd_pi                },  // Печатает значение π и время расчёта в миллисекундах
     {"main_time_exec"   , "superloop iteration: average and maximum", cmd_main_time_exec    },  // Печатает среднее и максимальное время суперцикла
     {"main_time_reset"  , "reset maximum iteration"                 , cmd_main_time_reset   },  // Обнуляет максимальное время суперцикла
 };
