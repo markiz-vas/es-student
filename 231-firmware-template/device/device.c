@@ -13,7 +13,8 @@
 // В этих файлах лежат адреса регистров
 #include "hardware/regs/addressmap.h"   // SYSINFO_BASE
 #include "hardware/regs/sysinfo.h"      // смещение регистра и имена масок
-
+// // ради PICO_UNIQUE_BOARD_ID_SIZE_BYTES
+// #include "pico/unique_id.h"
 
 // Переменная - константа, на неё будет даваться ссылка
 static char board_id_info[PICO_UNIQUE_BOARD_ID_SIZE_BYTES * 2 + 1]; // серийный номер платы

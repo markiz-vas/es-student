@@ -55,26 +55,3 @@ typedef struct
 void project_get_info(project_info_t *info);
 
 
-
-
-//device// // Чтобы другие модули могли увидеть переменную, созданную в device.c
-//device// extern struct info_t device_card;
-
-//device// // Тестовая структура с данными (TASK 2.1.5)
-//device// //  Порядок полей здесь не случайный, а нарочно неудачный: 
-//device// //  маленькое поле, за ним большое, за ним массив. 
-//device// //  Именно на нём видно то, ради чего задание сделано.
-//device// // name - Тринадцать символов: двенадцать на имя и один на завершающий ноль строки.
-//device// struct info_t
-//device// {
-//device//     uint32_t version;
-//device//     char name[13];      
-//device//     uint8_t revision;
-//device// };
-//device// // ТЕОРИЯ // TASK 2.1.5 //
-//device// // При последовательности revision, version, name размер структуры 24
-//device// // При последовательности version, name, revision размер структуры 20
-
-//device// // Печатает в консоль информацию о структуре info_t (раскладка в памяти)
-//device// void dev_info(void);
-

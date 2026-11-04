@@ -83,6 +83,18 @@
 //clock// }
 
 
+// Перечисляемый тип с секундомеров. 0 - суперцикл, [1 - STOPWATCH_QTY+1] - остальные
+enum stopwatch_t {
+    STOPWATCH_GLOBAL  = 0,  // global 
+    STOPWATCH_LOOP    = 1,  // loop
+    STOPWATCH_COMMAND = 2,  // command
+    STOPWATCH_LED     = 3,  // led
+    STOPWATCH_BUTTON  = 4,  // button
+    STOPWATCH_PI      = 5,  // pi
+};
+
+
+
 int main()
 {
     // подготовить стандартный ввод-вывод по каналам, включённым в CMake
@@ -112,36 +124,55 @@ int main()
     pi_task_init();
 
     // profiling //
-    // запоминаем начальное показание часов для профилирования
-    profiling_init();
-
+    // Создаём глобальный секундомер, запоминаем начальное показание часов для профилирования
+    // profiling_global_init();
+    profiling_stopwatch_init(STOPWATCH_GLOBAL, "global"); // Используется для возврата значений (вычислений в нём нет)
+    
+    // profiling //
+    // Создаём Секундомер по количеству STOPWATCH_QTY [1 - STOPWATCH_QTY+1]
+    profiling_stopwatch_init(STOPWATCH_LOOP   , "loop"      ); 
+    profiling_stopwatch_init(STOPWATCH_COMMAND, "command"   ); 
+    profiling_stopwatch_init(STOPWATCH_LED    , "led"       ); 
+    profiling_stopwatch_init(STOPWATCH_BUTTON , "button"    ); 
+    profiling_stopwatch_init(STOPWATCH_PI     , "pi"        ); 
 
     // text-protocol //
     // Инициализация протокола через usb
     stdio_text_protocol_init();
 
     // Печатает, что за прибор перед вами и какая в нём прошивка
-    log_version();
+    LOG_INF("%s %s\n", DEVICE_NAME, FIRMWARE_VERSION);
+
 
     // Бесконечный цикл (Суперцикл) - это обязательное условие,
     // Так как все программы запускаются на Земле 1 раз
     while (1)
     {
         // profiling //
-        // учитываем прошлую итерацию
-        profiling_iteration();
+        // учитываем прошлую итерацию (суперцикл, global)
+        // profiling_global_iteration();
+        profiling_start(STOPWATCH_GLOBAL);
+        // Замер от начала и до конца (loog)
+        profiling_start(STOPWATCH_LOOP);
+
 
         // button-task //
         // Отработка задачи кнопки
+        profiling_start(STOPWATCH_BUTTON);
         button_task_handle();
+        profiling_stop (STOPWATCH_BUTTON);
 
         // led-task //
         // Отработка задачи светодиода по состоянию
+        profiling_start(STOPWATCH_LED);
         led_task_handle();
+        profiling_stop (STOPWATCH_LED);
 
         // pi-task //
         // Отработка задачи вычисления π
+        profiling_start(STOPWATCH_PI);
         pi_task_handle();
+        profiling_stop (STOPWATCH_PI);
 
 
         // ТЕОРИЯ //
@@ -151,6 +182,7 @@ int main()
         // int c = getchar_timeout_us(0); // 0 мкс ожидания: забрать символ, только если он уже принят
         // if (c != PICO_ERROR_TIMEOUT) { print_f("got %c\n", (char)c); } // PICO_ERROR_TIMEOUT означает «символов не было»
 
+        profiling_start(STOPWATCH_COMMAND);
         // Считываем строку на вход
         const command_t *command = stdio_text_protocol_handle();
 
@@ -162,6 +194,9 @@ int main()
             // Обработка команды в api.h
             api_handle(command);
         }
-        if (command == NULL) continue;
+        //if (command == NULL) continue;
+        profiling_stop (STOPWATCH_COMMAND);
+
+        profiling_stop (STOPWATCH_LOOP);
     }// Суперцикл
 }

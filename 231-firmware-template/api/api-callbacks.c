@@ -6,6 +6,8 @@
 #include <errno.h>
 // ради strtoul
 #include <stdlib.h>
+// для работы со строками, strcmp() и memset()
+#include <string.h>
 
 // ради типов SDK, [getchar_timeout_us], [PICO_ERROR_TIMEOUT], NULL, uint, time_us_64()
 #include "pico/stdlib.h"
@@ -126,42 +128,82 @@ static void cmd_pi(const command_t *command) {
 // печатаем паспорт устройства
 static void device_info(void) {
     // Получаем информацию о приборе
-    device_info_t info;
-    device_get_info(&info);
+    device_info_t info_d;
+    device_get_info(&info_d);
 
     // Печать
-    printf("board: %s\n"    ,   info.board      );
-    printf("serial: %s\n"   ,   info.board_id   );
+    printf("board: %s\n"    ,   info_d.board      );
+    printf("serial: %s\n"   ,   info_d.board_id   );
     printf("chip: manufacturer 0x%03x, part 0x%04x, revision %u\n", 
-            (unsigned)info.manufacturer, (unsigned)info.part, (unsigned)info.revision);
-    printf("pico-sdk: %s\n" ,   info.pico_sdk   );
+            (unsigned)info_d.manufacturer, (unsigned)info_d.part, (unsigned)info_d.revision);
+    printf("pico-sdk: %s\n" ,   info_d.pico_sdk   );
 }
 
 // печатаем паспорт проекта
 static void project_info(void) {
     // Получаем информацию о проекте
-    project_info_t info;
-    project_get_info(&info);
+    project_info_t info_p;
+    project_get_info(&info_p);
 
     // Печать
-    printf("name: %s\n"         , info.device_name      );
-    printf("version: %s\n"      , info.firmware_version );
-    printf("project: %s\n"      , info.device_project   );
-    printf("repo: %s\n"         , info.device_repo      );
-    printf("TASK: %s\n"         , info.task_info        );
-    printf("date_build: %s\n"   , info.date_build_info  );
-    printf("time_build: %s\n"   , info.time_build_info  );
-    printf("log_level: %s\n"    , info.log_level_info   );
+    printf("name: %s\n"         , info_p.device_name      );
+    printf("version: %s\n"      , info_p.firmware_version );
+    printf("project: %s\n"      , info_p.device_project   );
+    printf("repo: %s\n"         , info_p.device_repo      );
+    printf("TASK: %s\n"         , info_p.task_info        );
+    printf("date_build: %s\n"   , info_p.date_build_info  );
+    printf("time_build: %s\n"   , info_p.time_build_info  );
+    printf("log_level: %s\n"    , info_p.log_level_info   );
+}
+
+// печатаем паспорт устройства
+static void task_info(bool isAll) {
+    // Получаем информацию о приборе
+    device_info_t info_d;
+    device_get_info(&info_d);
+    // Получаем информацию о проекте
+    project_info_t info_p;
+    project_get_info(&info_p);
+
+    // Печать
+    printf("name: %s\n"         , info_p.device_name      );
+    printf("version: %s\n"      , info_p.firmware_version );
+    printf("project: %s\n"      , info_p.device_project   );
+    printf("repo: %s\n"         , info_p.device_repo      );
+    // Печать 
+    printf("board: %s\n"    ,   info_d.board      );
+    printf("serial: %s\n"   ,   info_d.board_id   );
+    printf("chip: manufacturer 0x%03x, part 0x%04x, revision %u\n", 
+            (unsigned)info_d.manufacturer, (unsigned)info_d.part, (unsigned)info_d.revision);
+    printf("pico-sdk: %s\n" ,   info_d.pico_sdk   );
+    
+    // Печать
+    if (isAll) {
+        printf("TASK: %s\n"         , info_p.task_info        );
+        printf("date_build: %s\n"   , info_p.date_build_info  );
+        printf("time_build: %s\n"   , info_p.time_build_info  );
+        printf("log_level: %s\n"    , info_p.log_level_info   );
+    }
 }
 
 // Печатаем информацию о приборе и проекте (info)
 static void cmd_info(const command_t *command) {
-    if (command->argc >= 1) device_info();
-    if (command->argc >= 2) project_info();
+    // if (command->argc >= 1) device_info();
+    // if (command->argc >= 2) project_info();
+    
+    // Проверка на количество аргументов
+    bool isTask = true;
+    if (command->argc >= 2) {
+        if (strcmp(command->argv[0], "device" ) == 0) {device_info();  isTask = false;}
+        if (strcmp(command->argv[0], "project") == 0) {project_info(); isTask = false;}
+    }
+    
+    // Печать по заданию 2.3.1
+    if (isTask) task_info(command->argc > 1 ? true : false);
 }
 /// DEVICE /// END ///
 
-/// PROFILING ///
+/// PROFILING /// START ///
 // Печатает монотонное время прибора, в миллисекундах
 //  Монотонное время прибора ведёт таймер. Он прибавляет единицу раз в микросекунду, 
 //  начиная с момента сброса. Показание счёта возвращает функция time_us_64()
@@ -172,19 +214,68 @@ static void cmd_uptime(const command_t *command) {
     //  Деление на 1000 переводит микросекунды в миллисекунды.
 }
 
-/// PROFILING ///
-// печатает среднее и максимальное время суперцикла
-static void cmd_main_time_exec(const command_t *command) {
-    printf("iteration avg %.2f us, max %u us\n", 
-            profiling_avg_us(), (unsigned)profiling_max_us());
+// Получает из прибора выбранный секундомер
+// Печатает имя, кол-во замеров, среднее и максимальное время
+static void print_profiling_id(uint32_t id) {
+    // Ссылка на секундомер
+    profiling_result_t *stopwatch = NULL;
+    // Получение ссылки на секундомер
+    bool isRun = profiling_get(id, &stopwatch); 
+
+    // Печать (если успех)
+    if ((isRun) && (stopwatch)) {
+        // Вычисление среднего
+        float avg_us = (float)stopwatch->avg_sum / (float)stopwatch->count;
+        // печать
+        printf("%-10s count %-8u  mean %5.2f us  max %6u us\n", 
+                stopwatch->name, (unsigned)stopwatch->count, avg_us, (unsigned)stopwatch->max_us);
+    } else printf("error: No stopwatch [%u]\n", (unsigned)id);    
 }
 
-/// PROFILING ///
-// обнуляет максимальное время суперцикла
-static void cmd_main_time_reset(const command_t *command) {
-    profiling_reset_max();          // Обнуление
-    printf("%s", "max reset\n");    // Эхо-вывод
+// Выводит результаты всех заведённых секундомеров с момента сброса [Выбранного секундомера]
+static void cmd_profiling(const command_t *command) {
+    bool isAll  = true;
+    uint32_t arg_id = 0;
+    // Проверяем второй аргумент
+    if (command->argc > 1) {
+        // Проверка на число и перевод строки в число
+        if (parse_u32(command->argv[0], &arg_id)) {
+            isAll = false; // Обращение к выбранному секундомеру
+        }// Второй аргумент - число
+    }// Больше одного аргумента
+
+    // Печать
+    if (isAll) {// Всех
+        for (uint32_t id = 0; id <= STOPWATCH_QTY; id++) 
+            print_profiling_id(id);
+    } else {    // Выбранного
+        print_profiling_id(arg_id);
+    }
 }
+
+// Сбрасывает результаты всех секундомеров [Выбранного секундомера]
+static void cmd_profiling_reset(const command_t *command) {
+    bool isAll  = true;
+    uint32_t arg_id = 0;
+    // Проверяем второй аргумент
+    if (command->argc > 1) {
+        // Проверка на число и перевод строки в число
+        if (parse_u32(command->argv[0], &arg_id)) {
+            isAll = false; // Обращение к выбранному секундомеру
+        }// Второй аргумент - число
+    }// Больше одного аргумента
+
+    // Сброс
+    if (isAll) {// Всех
+        profiling_reset();              
+        printf("profiling reset\n");    
+    } else {    // Выбранного
+        bool isRun = profiling_reset_id(arg_id); 
+        if (isRun) printf("profiling reset [%u]\n", (unsigned)arg_id);
+        else   printf("error: No stopwatch [%u]\n", (unsigned)arg_id);    
+    }
+}
+/// PROFILING /// END ///
 
 /// LED-TASK /// SATART ///
 // вывод состояния светодиода
@@ -279,8 +370,10 @@ const api_command_t api_commands[] = {
     {"button"           , "button status and count of presses"      , cmd_button            },  // Состояние кнопки и число нажатий
     {"pi_start"         , "start calculate pi: pi_start [terms]"    , cmd_pi_start          },  // Старт вычисления  π 
     {"pi"               , "print pi and time calc in ms"            , cmd_pi                },  // Печатает значение π и время расчёта в миллисекундах
-    {"main_time_exec"   , "superloop iteration: average and maximum", cmd_main_time_exec    },  // Печатает среднее и максимальное время суперцикла
-    {"main_time_reset"  , "reset maximum iteration"                 , cmd_main_time_reset   },  // Обнуляет максимальное время суперцикла
+    {"profiling"        , "print all stopwatches [id_stopwatch]"    , cmd_profiling         },  // Выводит результаты всех заведённых секундомеров с момента сброса [Выбранного секундомера]
+    {"profiling_reset"  , "reset all stopwatches [id_stopwatch]"    , cmd_profiling_reset   },  // Сбрасывает результаты всех секундомеров [Выбранного секундомера]
+ // {"main_time_exec"   , "superloop iteration: average and maximum", cmd_main_time_exec    },  // Печатает среднее и максимальное время суперцикла
+ // {"main_time_reset"  , "reset maximum iteration"                 , cmd_main_time_reset   },  // Обнуляет максимальное время суперцикла
 };
 
 // Общее количество команд (вычисляется и сохраняется в константу)

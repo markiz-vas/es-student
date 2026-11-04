@@ -73,3 +73,4 @@ void api_print_debug_command(const command_t *command)
     LOG_DBG("\n");
     // test //
 }
+

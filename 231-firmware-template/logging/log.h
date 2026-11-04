@@ -4,7 +4,7 @@
 // стандартного ввода-вывода — тот же, что в любой программе на C
 #include <stdio.h>
 
-// Печатает, что за прибор перед вами и какая в нём прошивка
+// Печатает дату и время сборбки, уровень лога
 void log_version(void);
 // Печатает подпись перед текстом сообщения (в LOG_ERR, LOG_INF, LOG_DBG)
 void log_prefix(const char *level, const char *function, int line);
