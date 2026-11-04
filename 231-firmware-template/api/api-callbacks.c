@@ -121,12 +121,45 @@ static void cmd_pi(const command_t *command) {
 }
 /// CALC_PI /// END ///
 
-
+/// DEVICE /// START ///
 /// DEVICE /// Информация о приборе ///
 // печатаем паспорт устройства
-static void cmd_info(const command_t *command) {
-    device_info();
+static void device_info(void) {
+    // Получаем информацию о приборе
+    device_info_t info;
+    device_get_info(&info);
+
+    // Печать
+    printf("board: %s\n"    ,   info.board      );
+    printf("serial: %s\n"   ,   info.board_id   );
+    printf("chip: manufacturer 0x%03x, part 0x%04x, revision %u\n", 
+            (unsigned)info.manufacturer, (unsigned)info.part, (unsigned)info.revision);
+    printf("pico-sdk: %s\n" ,   info.pico_sdk   );
 }
+
+// печатаем паспорт проекта
+static void project_info(void) {
+    // Получаем информацию о проекте
+    project_info_t info;
+    project_get_info(&info);
+
+    // Печать
+    printf("name: %s\n"         , info.device_name      );
+    printf("version: %s\n"      , info.firmware_version );
+    printf("project: %s\n"      , info.device_project   );
+    printf("repo: %s\n"         , info.device_repo      );
+    printf("TASK: %s\n"         , info.task_info        );
+    printf("date_build: %s\n"   , info.date_build_info  );
+    printf("time_build: %s\n"   , info.time_build_info  );
+    printf("log_level: %s\n"    , info.log_level_info   );
+}
+
+// Печатаем информацию о приборе и проекте (info)
+static void cmd_info(const command_t *command) {
+    if (command->argc >= 1) device_info();
+    if (command->argc >= 2) project_info();
+}
+/// DEVICE /// END ///
 
 /// PROFILING ///
 // Печатает монотонное время прибора, в миллисекундах
@@ -237,7 +270,7 @@ static void cmd_button(const command_t *command) {
 // Массив команд для декодирования COM-порта
 const api_command_t api_commands[] = {
     // "имя команды"    , "описание команды (латиница!)"            , функция-обратный вызов},  // Описание команды (кирилица!)
-    {"info"             , "device passport"                         , cmd_info              },  // Паспорт устройства
+    {"info"             , "device passport [project-info] "         , cmd_info              },  // Паспорт устройства (2-й аргумент - паспорт проекта)
     {"uptime"           , "time since reset"                        , cmd_uptime            },  // Печатает монотонное время прибора, в миллисекундах
     {"led_enable"       , "enable led (on)"                         , cmd_led_enable        },  // Включить светодиод (горит)
     {"led_disable"      , "disable led (off)"                       , cmd_led_disable       },  // Выключить светодиод (потух)
