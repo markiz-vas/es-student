@@ -39,6 +39,7 @@ add_executable(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/led-task/led-task.c
    ${CMAKE_CURRENT_SOURCE_DIR}/button-task/button-task.c
    ${CMAKE_CURRENT_SOURCE_DIR}/pi-task/pi-task.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/platform/platform.c
    
    #TASK 2.3.6# # add files in libs
    # ${CMAKE_CURRENT_SOURCE_DIR}/logging/log.c
@@ -60,6 +61,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
    ${CMAKE_CURRENT_SOURCE_DIR}/led-task
    ${CMAKE_CURRENT_SOURCE_DIR}/button-task
    ${CMAKE_CURRENT_SOURCE_DIR}/pi-task
+   ${CMAKE_CURRENT_SOURCE_DIR}/platform
    
    #TASK 2.3.6# # add files in libs
    # ${CMAKE_CURRENT_SOURCE_DIR}/logging

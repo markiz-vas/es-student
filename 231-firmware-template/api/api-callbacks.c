@@ -375,7 +375,7 @@ static void cmd_button(const command_t *command) {
 // Массив команд для декодирования COM-порта
 const api_command_t api_commands[] = {
     // "имя команды"    , "описание команды (латиница!)"            , функция-обратный вызов},  // Описание команды (кирилица!)
-    {"info"             , "device passport [project-info] "         , cmd_info              },  // Паспорт устройства (2-й аргумент - паспорт проекта)
+    {"info"             , "device passport [device, firmware, all]" , cmd_info              },  // Паспорт устройства (2-й аргумент - паспорт проекта)
     {"uptime"           , "time since reset"                        , cmd_uptime            },  // Печатает монотонное время прибора, в миллисекундах
     {"led_enable"       , "enable led (on)"                         , cmd_led_enable        },  // Включить светодиод (горит)
     {"led_disable"      , "disable led (off)"                       , cmd_led_disable       },  // Выключить светодиод (потух)

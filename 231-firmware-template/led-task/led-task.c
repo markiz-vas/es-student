@@ -1,26 +1,11 @@
 // заголовочный файл состояния светодиода: выключен, горит или мигает
 #include "led-task.h"
-// Работа со светодиодом на выводе LED_PIN
-//#include "led.h"
-// заголовочные файлы для stdio_init_all
-// ради типов SDK, [getchar_timeout_us], [PICO_ERROR_TIMEOUT], NULL, uint
-#include "pico/stdlib.h"
-// заголовочные файлы для gpio_init
-// заголовочные файлы для gpio_set_dir, gpio_put 
-#include "hardware/gpio.h"
+// заголовочный файл Модуль работы с железом (gpio_, stdio_)
+#include "platform.h"
 // заголовочный файл работы со временем
 #include "systime/systime.h"
 
 
-// Pico W devices use a GPIO on the WIFI chip for the LED,
-// so when building for Pico W, CYW43_WL_GPIO_LED_PIN will be defined // pico_w //
-#if defined(CYW43_WL_GPIO_LED_PIN)
-#include "pico/cyw43_arch.h"
-#endif
-
-
-// Нормер выхода светодиода
-static const uint32_t LED_PIN = 16;
 // Период мигания светодиода (миллисекунды)
 static const uint32_t BLINK_PERIOD_MS = 1000;
 
@@ -44,12 +29,7 @@ static uint64_t last_toggle_us;
 // выставляет уровень и запоминает состояние
 static void led_set(bool on) {
     led_state_pin = on;                 // запоминаем состояние (led_state_pin - static)
-    gpio_put(LED_PIN, led_state_pin);   // выставляем заданный уровень
-
-    // pico_w //   
-    #if defined(CYW43_WL_GPIO_LED_PIN)
-    cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, !led_state_pin);
-    #endif
+    platform_led_set(led_state_pin);    // выставляем заданный уровень // platform.h //
 }
 
 // вызывает led_set() с обратным значением
@@ -57,28 +37,11 @@ static void led_toggle(void) {
     led_set(!led_state_pin);
 }
 
-// Инициализация, настраивает вывод на выход и гасит/зажигает светодиод
-static void led_init(void)
-{
-    // Perform initialisation
-    // For Pico W devices we need to initialise the driver etc // pico_w //
-    #if defined(CYW43_WL_GPIO_LED_PIN)  
-    int rc = cyw43_arch_init();         
-    hard_assert(rc == PICO_OK);         
-    #endif                              
-
-    // Initialisation GPIO
-    gpio_init(LED_PIN);                 // инициализируем пин светодиода
-    gpio_set_dir(LED_PIN, GPIO_OUT);    // настраиваем пин светодиода на выход
-    led_set(led_state_pin);             // задаем начальное значение светодиода
-}
-
 // Инициализация, настраивает вывод на выход, устанавливает состояние светодиода
 void led_task_init(void)
 {
-    // настраиваем вывод светодиода, период 1000 мс, состояние «мигает»
-    // Инициализация, настраивает вывод на выход и гасит/зажигает светодиод
-    led_init(); 
+    // задаем начальное значение светодиода
+    led_set(led_state_pin);             
     // Устанавливаем период
     led_task_set_period_ms(BLINK_PERIOD_MS);
     // Последний замер монотонного времени
@@ -180,12 +143,13 @@ uint32_t led_task_get_period_ms(void) {
 
 // возвращает состояние светодиода (выставленный уровень)
 bool led_is_on(void) {
+    led_state_pin = platform_led_get();
     return led_state_pin;
 }
 
 // возвращает номер вывода светодиода
 uint32_t led_pin(void) {
-    return LED_PIN;
+    return platform_led_pin();
 }
 
 
