@@ -8,7 +8,7 @@
 // для работы со строками, strcmp() и memset()
 #include <string.h>
 // заголовочный файл для лога ошибок #include "logging\log.h"
-#include "log.h"
+#include "logging/log.h"
 
 // Локальная функция вызывающая список всех команд
 static void help(void)

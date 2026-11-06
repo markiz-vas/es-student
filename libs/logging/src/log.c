@@ -1,5 +1,5 @@
 // заголовочный файл для лога ошибок
-#include "log.h"
+#include "logging/log.h"
 
 // Печатает дату и время сборбки, уровень лога
 void log_version(void) {

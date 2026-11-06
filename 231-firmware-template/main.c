@@ -9,9 +9,9 @@
 // Заголовочный файл задачи вычисления π (пи) с прерыванием на другие процессы
 #include "pi-task.h"
 // заголовочный файл для лога ошибок #include "logging\log.h"
-#include "log.h"
+#include "logging/log.h"
 // заголовочный файл лога информации о приборе #include "device\device.h"
-#include "device.h"
+#include "device/device.h"
 // заголовочный файл модуля профилирования (время суперцикла)
 #include "profiling.h"
 // заголовочный файл протокола обмена текстовыми командами

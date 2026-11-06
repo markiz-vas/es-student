@@ -1,7 +1,7 @@
 // заголовочный файл лога информации о приборе #include "device\device.h"
-#include "device.h"
+#include "device/device.h"
 // заголовочный файл для лога ошибок
-#include "log.h"
+#include "logging/log.h"
 //device// // для подключения макроса offsetof
 //device// #include <stddef.h>
 

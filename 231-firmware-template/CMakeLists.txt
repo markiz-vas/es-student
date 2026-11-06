@@ -34,8 +34,8 @@ add_compile_options(-Wall)
 # из перечисленных исходных файлов. (*.c)
 add_executable(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/main.c
-   ${CMAKE_CURRENT_SOURCE_DIR}/logging/log.c
-   ${CMAKE_CURRENT_SOURCE_DIR}/device/device.c
+   # ${CMAKE_CURRENT_SOURCE_DIR}/logging/log.c
+   # ${CMAKE_CURRENT_SOURCE_DIR}/device/device.c
    ${CMAKE_CURRENT_SOURCE_DIR}/profiling/profiling.c
    ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol/stdio-text-protocol.c
    ${CMAKE_CURRENT_SOURCE_DIR}/api/api.c
@@ -55,8 +55,8 @@ add_executable(${PROJECT_NAME}
 # Слово PRIVATE означает, что путь нужен только при сборке этой цели и никуда дальше не передаётся.
 target_include_directories(${PROJECT_NAME} PRIVATE
    ${CMAKE_CURRENT_SOURCE_DIR}            # для поиска *.h в корневой папки и подпапок
-   ${CMAKE_CURRENT_SOURCE_DIR}/logging
-   ${CMAKE_CURRENT_SOURCE_DIR}/device
+   # ${CMAKE_CURRENT_SOURCE_DIR}/logging
+   # ${CMAKE_CURRENT_SOURCE_DIR}/device
    ${CMAKE_CURRENT_SOURCE_DIR}/profiling
    ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol
    ${CMAKE_CURRENT_SOURCE_DIR}/api
@@ -71,23 +71,36 @@ target_include_directories(${PROJECT_NAME} PRIVATE
    # ${CMAKE_CURRENT_SOURCE_DIR}/clock
 )
 
+# Добавляем библиотеки из папки libs
+# Добавить к сборке проекта описание из logging/CMakeLists.txt
+# add_subdirectory(logging)
+
 # С какими библиотеками. Тоже типовая: указать, на что опирается ваш код.
 # pico_stdlib — основная библиотека SDK,
 # из неё берутся gpio_init, gpio_put, sleep_ms.
 # pico_unique_id — читает серийный номер платы pico_get_unique_board_id_string()
 target_link_libraries(${PROJECT_NAME}
-   pico_stdlib
-   pico_unique_id
-
-   # pico_w #
-   # pico_cyw43_arch_none     # we need Wifi to access the GPIO, but we don't need anything else
+   pico_stdlib             # основная библиотека SDK
+   pico_unique_id          # читает серийный номер платы
+   device                  # подключение библиотеки паспорта устройства
+   logging                 # подключение библиотеки журнала
+   # profiling               # подключение библиотеки профилирования
+   # stdio-text-protocol     # подключение библиотеки протокола
+   # systime                 # подключение библиотеки работы со временем
+   
+   # pico_cyw43_arch_none  # pico_w #  # we need Wifi to access the GPIO, but we don't need anything else
 )
+
+
+# libs лежит вне папки проекта: второй аргумент задаёт каталог сборки
+add_subdirectory(../libs ${CMAKE_BINARY_DIR}/libs)      # подключение папок библиотеки
+
 
 # Команда создаёт макрос DEVICE_BOARD со строкой из PICO_BOARD — как если бы вы написали:
 #     #define DEVICE_BOARD "pico" в коде, только пишет его сборка.
 # Определение макросов (#define <name> <значение>), формат: <name>=<значение> [ВНИМАНИЕ: пробелы недопустимы]
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-    DEVICE_BOARD="${PICO_BOARD}" # Имя проекта
+   #DEVICE_BOARD="${PICO_BOARD}" # Имя проекта
     LOG_LEVEL=LOG_LEVEL_INF      # Уровень лога
    #LOG_LEVEL=LOG_LEVEL_DBG      # Уровень лога
 )

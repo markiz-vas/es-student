@@ -14,7 +14,7 @@
 // заголовочный файл протокола команд
 #include "api-commands.h"
 // заголовочный файл лога информации о приборе #include "device\device.h"
-#include "device.h"
+#include "device/device.h"
 // заголовочный файл модуля профилирования (время суперцикла)
 #include "profiling.h"
 // заголовочный файл состояния светодиода: выключен, горит или мигает
@@ -227,7 +227,7 @@ static void print_profiling_id(uint32_t id) {
         // Вычисление среднего
         float avg_us = (float)stopwatch->avg_sum / (float)stopwatch->count;
         // печать
-        printf("%-10s count %-8u  mean %5.2f us  max %6u us\n", 
+        printf("%-10s count %-8u  mean %.2f us max %6u us\n", 
                 stopwatch->name, (unsigned)stopwatch->count, avg_us, (unsigned)stopwatch->max_us);
     } else printf("error: No stopwatch [%u]\n", (unsigned)id);    
 }
