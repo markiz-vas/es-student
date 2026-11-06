@@ -21,9 +21,9 @@ typedef struct
     char *date_build_info   ; // Дата сборки проекта
     char *time_build_info   ; // Время сборки проекта
     char *log_level_info    ; // Уровень лога (LOG_LEVEL) в проекте
-} project_info_t;
+} firmware_info_t;
 
 // Возвращает информацию о проекте
-void project_get_info(project_info_t *info);
+void firmware_get_info(firmware_info_t *info);
 
 

@@ -4,7 +4,7 @@
 #include "logging/log.h"
 
 // Возвращает информацию о плате
-void project_get_info(project_info_t *info)
+void firmware_get_info(firmware_info_t *info)
 {
     // Название модуля и его версия
     info->firmware_name     = FIRMWARE_NAME     ; // Имя проекта      // "es-cmd-usb"

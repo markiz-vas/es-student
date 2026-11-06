@@ -144,10 +144,10 @@ static void device_info(void) {
 }
 
 // печатаем паспорт проекта
-static void project_info(void) {
+static void firmware_info(void) {
     // Получаем информацию о проекте
-    project_info_t info_p;
-    project_get_info(&info_p);
+    firmware_info_t info_p;
+    firmware_get_info(&info_p);
 
     // Печать
     printf("name: %s\n"         , info_p.firmware_name    );
@@ -166,8 +166,8 @@ static void task_info(bool isAll) {
     device_info_t info_d;
     device_get_info(&info_d);
     // Получаем информацию о проекте
-    project_info_t info_p;
-    project_get_info(&info_p);
+    firmware_info_t info_p;
+    firmware_get_info(&info_p);
 
     // Печать
     printf("name: %s\n"         , info_p.firmware_name    );
@@ -193,13 +193,13 @@ static void task_info(bool isAll) {
 // Печатаем информацию о приборе и проекте (info)
 static void cmd_info(const command_t *command) {
     // if (command->argc >= 1) device_info();
-    // if (command->argc >= 2) project_info();
+    // if (command->argc >= 2) firmware_info();
     
     // Проверка на количество аргументов
     bool isTask = true;
     if (command->argc >= 2) {
-        if (strcmp(command->argv[0], "device" ) == 0) {device_info();  isTask = false;}
-        if (strcmp(command->argv[0], "project") == 0) {project_info(); isTask = false;}
+        if (strcmp(command->argv[0], "device"  ) == 0) {device_info()  ; isTask = false;}
+        if (strcmp(command->argv[0], "firmware") == 0) {firmware_info(); isTask = false;}
     }
     
     // Печать по заданию 2.3.1
