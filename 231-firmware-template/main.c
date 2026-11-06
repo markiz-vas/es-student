@@ -15,7 +15,7 @@
 // заголовочный файл паспорта прошивки
 #include "firmware/firmware.h"
 // заголовочный файл модуля профилирования (время суперцикла)
-#include "profiling.h"
+#include "profiling/profiling.h"
 // заголовочный файл протокола обмена текстовыми командами
 #include "stdio-text-protocol/stdio-text-protocol.h"
 // заголовочный файл протокола api

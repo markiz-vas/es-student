@@ -34,16 +34,17 @@ add_compile_options(-Wall)
 # из перечисленных исходных файлов. (*.c)
 add_executable(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/main.c
-   # ${CMAKE_CURRENT_SOURCE_DIR}/logging/log.c
-   # ${CMAKE_CURRENT_SOURCE_DIR}/device/device.c
-   # ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol/stdio-text-protocol.c
-   ${CMAKE_CURRENT_SOURCE_DIR}/profiling/profiling.c
    ${CMAKE_CURRENT_SOURCE_DIR}/api/api.c
    ${CMAKE_CURRENT_SOURCE_DIR}/api/api-callbacks.c
    ${CMAKE_CURRENT_SOURCE_DIR}/led-task/led-task.c
    ${CMAKE_CURRENT_SOURCE_DIR}/button-task/button-task.c
    ${CMAKE_CURRENT_SOURCE_DIR}/pi-task/pi-task.c
-
+   
+   #TASK 2.3.6# # add files in libs
+   # ${CMAKE_CURRENT_SOURCE_DIR}/logging/log.c
+   # ${CMAKE_CURRENT_SOURCE_DIR}/device/device.c
+   # ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol/stdio-text-protocol.c
+   # ${CMAKE_CURRENT_SOURCE_DIR}/profiling/profiling.c
    #TASK 2.3.2# # dellete files from project "231-firmware-template"
    # ${CMAKE_CURRENT_SOURCE_DIR}/led/led.c
    #TASK 2.3.1# # dellete files from project "231-firmware-template"
@@ -55,15 +56,16 @@ add_executable(${PROJECT_NAME}
 # Слово PRIVATE означает, что путь нужен только при сборке этой цели и никуда дальше не передаётся.
 target_include_directories(${PROJECT_NAME} PRIVATE
    ${CMAKE_CURRENT_SOURCE_DIR}            # для поиска *.h в корневой папки и подпапок
-   # ${CMAKE_CURRENT_SOURCE_DIR}/logging
-   # ${CMAKE_CURRENT_SOURCE_DIR}/device
-   # ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol
-   ${CMAKE_CURRENT_SOURCE_DIR}/profiling
    ${CMAKE_CURRENT_SOURCE_DIR}/api
    ${CMAKE_CURRENT_SOURCE_DIR}/led-task
    ${CMAKE_CURRENT_SOURCE_DIR}/button-task
    ${CMAKE_CURRENT_SOURCE_DIR}/pi-task
-
+   
+   #TASK 2.3.6# # add files in libs
+   # ${CMAKE_CURRENT_SOURCE_DIR}/logging
+   # ${CMAKE_CURRENT_SOURCE_DIR}/device
+   # ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol
+   # ${CMAKE_CURRENT_SOURCE_DIR}/profiling
    #TASK 2.3.2# # dellete files from project "231-firmware-template"
    # ${CMAKE_CURRENT_SOURCE_DIR}/led
    #TASK 2.3.1# # dellete files from project "231-firmware-template"
@@ -87,7 +89,7 @@ target_link_libraries(${PROJECT_NAME}
    logging                 # подключение библиотеки журнала
    stdio-text-protocol     # подключение библиотеки протокола
    systime                 # подключение библиотеки работы со временем
-   # profiling               # подключение библиотеки профилирования
+   profiling               # подключение библиотеки профилирования
    
    # pico_cyw43_arch_none  # pico_w #  # we need Wifi to access the GPIO, but we don't need anything else
 )

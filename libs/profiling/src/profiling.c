@@ -1,6 +1,7 @@
 // заголовочный файл модуля профилирования (время суперцикла)
-#include "profiling.h"
-// ради типов SDK
+#include "profiling/profiling.h"
+// заголовочные файлы для stdio_init_all // ради типов SDK
+// ради типов SDK, [getchar_timeout_us], [PICO_ERROR_TIMEOUT], NULL, uint
 #include "pico/stdlib.h"
 // заголовочный файл работы со временем
 #include "systime/systime.h"
@@ -48,7 +49,7 @@ static void profiling_global_init(uint32_t id, const char *name) {
     // возвращает младшие 32 разряда часов
     global_stopwatch.previous_us = systime_us_32();
     // ТЕОРИЯ // TASK 2.2.4 //
-    //  time_us_32() возвращает младшие 32 разряда тех же часов, что _time_us_64(). 
+    //  _time_us_32() возвращает младшие 32 разряда тех же часов, что _time_us_64(). 
     //  Читать их дешевле, а переполняются они раз в 71,6 минуты. 
     //  Разность двух показаний переполнение переживает, и замер остаётся верным. 
 }
