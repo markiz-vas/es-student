@@ -8,6 +8,10 @@
 
 
 
+// профилирование включено: вызовы работают с секундомером
+// PROFILING_ENABLED // START //
+#if PROFILING_ENABLED
+
 // ТЕОРИЯ // TASK 2.2.4 //
 // Часы считаются один раз за итерацию и в одном и том же месте цикла. 
 // Тогда разность с прошлым показанием равна длительности прошлой итерации целиком
@@ -112,8 +116,21 @@ static void profiling_global_reset_max(void) {
     global_stopwatch.max_us = 0;
 }
 
-
-
+#else   // PROFILING_ENABLED // ELSE //
+typedef struct {
+    uint32_t id         ; // номер секундомера
+    char    *name       ; // имя секундомера
+} profiling_global_t;
+static profiling_global_t global_stopwatch;
+static void profiling_global_init(uint32_t id, const char *name) {    
+    global_stopwatch.id = id;
+    global_stopwatch.name = (char *)name;
+}
+// static void profiling_global_iteration(void) { return; }
+static float profiling_global_avg_us(void) { return 0; }
+static uint32_t profiling_global_max_us(void) { return 0; }
+static void profiling_global_reset_max(void) { return; }
+#endif  // PROFILING_ENABLED // FINISH //
 
 
 
@@ -153,6 +170,10 @@ void profiling_stopwatch_init(uint32_t id, const char *name)
     stopwatches[id].start_us= 0;
     stopwatches[id].id      = id;
 }
+
+
+// PROFILING_ENABLED // START //
+#if PROFILING_ENABLED
 
 // Запустить замер секундомера
 bool profiling_start(uint32_t id)
@@ -197,6 +218,7 @@ bool profiling_stop(uint32_t id)
     // Секундомеры с номерами от 0 до STOPWATCH_QTY
     return true; 
 }
+#endif  // PROFILING_ENABLED // FINISH //
 
 // Вернуть значения секундомера
 bool profiling_get(uint32_t id, profiling_result_t **result)

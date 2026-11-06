@@ -13,6 +13,18 @@
 // Секундомер под номером 0 забронирован под глобальный секундомер (суперцикл)
 #define STOPWATCH_QTY 5
 
+// по умолчанию профилирование включено
+#ifndef PROFILING_ENABLED
+#define PROFILING_ENABLED 1
+#endif
+
+// ТЕОРИЯ // TASK 2.2.6 //
+// Сравните размеры build/231_firmware_template.bin в двух сборках. 
+//  У нас вышло 39 056 байта с профилированием и 38 048 без него.
+
+
+
+
 // Структура Секундомер (stopwatch)
 typedef struct {
     char    *name       ; // имя секундомера
@@ -29,10 +41,21 @@ void profiling_stopwatch_init(uint32_t id, const char *name);
 // для всех секундомеров, id должен быть найден в списке
 // false — секундомер с таким номером не заведён
 
+
+// профилирование включено: вызовы работают с секундомером
+#if PROFILING_ENABLED
 // Запустить замер секундомера
 bool profiling_start(uint32_t id);
 // Отчет секундомера
 bool profiling_stop(uint32_t id);
+#else
+// профилирование выключено: вызовы ничего не делают
+#define profiling_start(id) ((void)0)
+#define profiling_stop(id) ((void)0)
+#endif
+
+
+
 // Вернуть значения секундомера
 bool profiling_get(uint32_t id, profiling_result_t **result);
 // Сбросить все секундомеры
