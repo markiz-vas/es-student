@@ -218,6 +218,9 @@ static void cmd_uptime(const command_t *command) {
     //  Деление на 1000 переводит микросекунды в миллисекунды.
 }
 
+// PROFILING_ENABLED // START //
+#if PROFILING_ENABLED
+
 // Получает из прибора выбранный секундомер
 // Печатает имя, кол-во замеров, среднее и максимальное время
 static void print_profiling_id(uint32_t id) {
@@ -239,10 +242,6 @@ static void print_profiling_id(uint32_t id) {
 // Выводит результаты всех заведённых секундомеров с момента сброса [Выбранного секундомера]
 static void cmd_profiling(const command_t *command) 
 {
-    // профилирование включено: вызовы работают с секундомером
-    // PROFILING_ENABLED // START //
-    #if PROFILING_ENABLED
-
     bool isAll  = true;
     uint32_t arg_id = 0;
     // Проверяем второй аргумент
@@ -260,11 +259,13 @@ static void cmd_profiling(const command_t *command)
     } else {    // Выбранного
         print_profiling_id(arg_id);
     }
-
-    #else   // PROFILING_ENABLED // ELSE //
-    printf("profiling is disabled in this build\n");
-    #endif  // PROFILING_ENABLED // FINISH //
 }
+
+#else   // PROFILING_ENABLED // ELSE //
+static void cmd_profiling(const command_t *command) {
+    printf("profiling is disabled in this build\n");
+}
+#endif  // PROFILING_ENABLED // FINISH //
 
 // Сбрасывает результаты всех секундомеров [Выбранного секундомера]
 static void cmd_profiling_reset(const command_t *command) {

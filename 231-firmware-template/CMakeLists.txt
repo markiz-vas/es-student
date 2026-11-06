@@ -106,7 +106,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
    #DEVICE_BOARD="${PICO_BOARD}" # Имя проекта
     LOG_LEVEL=LOG_LEVEL_INF      # Уровень лога
    #LOG_LEVEL=LOG_LEVEL_DBG      # Уровень лога
-   #PROFILING_ENABLED=1          # выключатель профилирования: 0 — вызовов секундомеров в образе нет
+   #PROFILING_ENABLED=0          # выключатель профилирования: 0 — вызовов секундомеров в образе нет
 )
 
 # Команда создаёт макрос для библиотеки profiling
