@@ -36,8 +36,8 @@ add_executable(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/main.c
    # ${CMAKE_CURRENT_SOURCE_DIR}/logging/log.c
    # ${CMAKE_CURRENT_SOURCE_DIR}/device/device.c
+   # ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol/stdio-text-protocol.c
    ${CMAKE_CURRENT_SOURCE_DIR}/profiling/profiling.c
-   ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol/stdio-text-protocol.c
    ${CMAKE_CURRENT_SOURCE_DIR}/api/api.c
    ${CMAKE_CURRENT_SOURCE_DIR}/api/api-callbacks.c
    ${CMAKE_CURRENT_SOURCE_DIR}/led-task/led-task.c
@@ -57,8 +57,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
    ${CMAKE_CURRENT_SOURCE_DIR}            # для поиска *.h в корневой папки и подпапок
    # ${CMAKE_CURRENT_SOURCE_DIR}/logging
    # ${CMAKE_CURRENT_SOURCE_DIR}/device
+   # ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol
    ${CMAKE_CURRENT_SOURCE_DIR}/profiling
-   ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol
    ${CMAKE_CURRENT_SOURCE_DIR}/api
    ${CMAKE_CURRENT_SOURCE_DIR}/led-task
    ${CMAKE_CURRENT_SOURCE_DIR}/button-task
@@ -83,9 +83,10 @@ target_link_libraries(${PROJECT_NAME}
    pico_stdlib             # основная библиотека SDK
    pico_unique_id          # читает серийный номер платы
    device                  # подключение библиотеки паспорта устройства
+   firmware                # подключение библиотеки паспорта прошивки
    logging                 # подключение библиотеки журнала
+   stdio-text-protocol     # подключение библиотеки протокола
    # profiling               # подключение библиотеки профилирования
-   # stdio-text-protocol     # подключение библиотеки протокола
    # systime                 # подключение библиотеки работы со временем
    
    # pico_cyw43_arch_none  # pico_w #  # we need Wifi to access the GPIO, but we don't need anything else

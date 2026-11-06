@@ -13,8 +13,10 @@
 #include "pico/stdlib.h"
 // заголовочный файл протокола команд
 #include "api-commands.h"
-// заголовочный файл лога информации о приборе #include "device\device.h"
+// заголовочный файл лога информации о приборе // заголовочный файл паспорта прошивки
 #include "device/device.h"
+// заголовочный файл паспорта прошивки
+#include "firmware/firmware.h"
 // заголовочный файл модуля профилирования (время суперцикла)
 #include "profiling.h"
 // заголовочный файл состояния светодиода: выключен, горит или мигает
@@ -146,10 +148,10 @@ static void project_info(void) {
     project_get_info(&info_p);
 
     // Печать
-    printf("name: %s\n"         , info_p.device_name      );
+    printf("name: %s\n"         , info_p.firmware_name    );
     printf("version: %s\n"      , info_p.firmware_version );
-    printf("project: %s\n"      , info_p.device_project   );
-    printf("repo: %s\n"         , info_p.device_repo      );
+    printf("project: %s\n"      , info_p.firmware_project );
+    printf("repo: %s\n"         , info_p.firmware_repo    );
     printf("TASK: %s\n"         , info_p.task_info        );
     printf("date_build: %s\n"   , info_p.date_build_info  );
     printf("time_build: %s\n"   , info_p.time_build_info  );
@@ -166,10 +168,10 @@ static void task_info(bool isAll) {
     project_get_info(&info_p);
 
     // Печать
-    printf("name: %s\n"         , info_p.device_name      );
+    printf("name: %s\n"         , info_p.firmware_name    );
     printf("version: %s\n"      , info_p.firmware_version );
-    printf("project: %s\n"      , info_p.device_project   );
-    printf("repo: %s\n"         , info_p.device_repo      );
+    printf("project: %s\n"      , info_p.firmware_project );
+    printf("repo: %s\n"         , info_p.firmware_repo    );
     // Печать 
     printf("board: %s\n"    ,   info_d.board      );
     printf("serial: %s\n"   ,   info_d.board_id   );

@@ -1,7 +1,5 @@
 // заголовочный файл лога информации о приборе #include "device\device.h"
 #include "device/device.h"
-// заголовочный файл для лога ошибок
-#include "logging/log.h"
 //device// // для подключения макроса offsetof
 //device// #include <stddef.h>
 
@@ -48,33 +46,6 @@ void device_get_info(device_info_t *info)
     // Тип платы и версия SDK
     info->board         = DEVICE_BOARD;
     info->pico_sdk      = PICO_SDK_VERSION_STRING;
-}
-
-
-// Возвращает информацию о плате
-void project_get_info(project_info_t *info)
-{
-    // Название модуля и его версия
-    info->device_name       = DEVICE_NAME       ; // Имя проекта      // "es-cmd-usb"
-    info->firmware_version  = FIRMWARE_VERSION  ; // Версия проекта   // "1.0.0"
-
-    // Информация о проекте
-    info->device_project    = DEVICE_PROJECT    ; // Название проекта (папка)
-    info->device_repo       = DEVICE_REPO       ; // Расположение проекта (сайт, github)
-    info->task_info         = TASK_INFO         ; // Информация о задании (ant-lab)
-
-    // Дата и время сборки
-    info->date_build_info   = __DATE__; // Дата сборки проекта
-    info->time_build_info   = __TIME__; // Время сборки проекта
-
-    // Уровень лога (LOG_LEVEL) в проекте
-    switch (LOG_LEVEL) {
-        case LOG_LEVEL_ERR: info->log_level_info = "err"; break;
-        case LOG_LEVEL_INF: info->log_level_info = "inf"; break;
-        case LOG_LEVEL_DBG: info->log_level_info = "dbg"; break;
-        default:            info->log_level_info = "unknown"; break;
-    }//switch
-    
 }
 
 

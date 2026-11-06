@@ -3,7 +3,7 @@
 #pragma once
 
 // заголовочный файл протокола обмена текстовыми командами
-#include "stdio-text-protocol.h"
+#include "stdio-text-protocol/stdio-text-protocol.h"
 
 // проверяет команду в том порядке, который разобран в т2.3.8
 void api_handle(const command_t *command);

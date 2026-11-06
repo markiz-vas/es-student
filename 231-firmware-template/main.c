@@ -10,12 +10,14 @@
 #include "pi-task.h"
 // заголовочный файл для лога ошибок #include "logging\log.h"
 #include "logging/log.h"
-// заголовочный файл лога информации о приборе #include "device\device.h"
+// заголовочный файл лога информации о приборе // заголовочный файл паспорта прошивки
 #include "device/device.h"
+// заголовочный файл паспорта прошивки
+#include "firmware/firmware.h"
 // заголовочный файл модуля профилирования (время суперцикла)
 #include "profiling.h"
 // заголовочный файл протокола обмена текстовыми командами
-#include "stdio-text-protocol.h"
+#include "stdio-text-protocol/stdio-text-protocol.h"
 // заголовочный файл протокола api
 #include "api.h"
 // заголовочные файлы для stdio_init_all
@@ -141,7 +143,7 @@ int main()
     stdio_text_protocol_init();
 
     // Печатает, что за прибор перед вами и какая в нём прошивка
-    LOG_INF("%s %s\n", DEVICE_NAME, FIRMWARE_VERSION);
+    LOG_INF("%s %s\n", FIRMWARE_NAME, FIRMWARE_VERSION);
 
 
     // Бесконечный цикл (Суперцикл) - это обязательное условие,

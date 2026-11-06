@@ -1,5 +1,5 @@
 // заголовочный файл протокола обмена текстовыми командами
-#include "stdio-text-protocol.h"
+#include "stdio-text-protocol/stdio-text-protocol.h"
 // стандартного ввода-вывода — тот же, что в любой программе на C
 #include <stdio.h>
 // ради типов SDK, [getchar_timeout_us], [PICO_ERROR_TIMEOUT], NULL, uint

@@ -4,7 +4,7 @@
 #pragma once
 
 // заголовочный файл протокола обмена текстовыми командами
-#include "stdio-text-protocol.h"
+#include "stdio-text-protocol/stdio-text-protocol.h"
 // ради типа uint: uint — не язык C, а имя из Pico SDK.
 #include "pico/types.h"
 
