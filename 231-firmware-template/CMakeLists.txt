@@ -86,8 +86,8 @@ target_link_libraries(${PROJECT_NAME}
    firmware                # подключение библиотеки паспорта прошивки
    logging                 # подключение библиотеки журнала
    stdio-text-protocol     # подключение библиотеки протокола
+   systime                 # подключение библиотеки работы со временем
    # profiling               # подключение библиотеки профилирования
-   # systime                 # подключение библиотеки работы со временем
    
    # pico_cyw43_arch_none  # pico_w #  # we need Wifi to access the GPIO, but we don't need anything else
 )

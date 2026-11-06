@@ -8,6 +8,9 @@
 // заголовочные файлы для gpio_init
 // заголовочные файлы для gpio_set_dir, gpio_put 
 #include "hardware/gpio.h"
+// заголовочный файл работы со временем
+#include "systime/systime.h"
+
 
 // Pico W devices use a GPIO on the WIFI chip for the LED,
 // so when building for Pico W, CYW43_WL_GPIO_LED_PIN will be defined // pico_w //
@@ -34,35 +37,6 @@ static uint64_t half_period_us;
 // Последнее время (mks, микросекунды, 10-6)
 static uint64_t last_toggle_us;
 
-
-
-
-// Проверяет, прошло ли время period_us со времени last_us
-// Времена в микросекундах
-// Если Время прошло, то обновляем последнее время
-// true - необходимое время прошло, false - время ещё не прошло
-static bool period_elapsed(uint64_t *last_us, uint64_t period_us)
-{
-    // Замер монотонного времени
-    uint64_t now_us = time_us_64();
-
-    // Проверяет, прошло ли время period_us со времени last_us
-    if (now_us - *last_us < period_us) {
-        return false; // ранний выход, если не прошло
-    }
-
-    // Следующее срабатывание отсчитывается от прошлого, а не от «сейчас»
-    *last_us += period_us;
-
-    // Отстали больше чем на период: не догонять, а начать отсчёт заново
-    if (now_us - *last_us >= period_us) {
-        // сохраняем текущее время
-        *last_us = now_us;
-    }
-
-    // Время прошло
-    return true;
-}
 
 
 
@@ -122,7 +96,7 @@ void led_task_handle(void) {
         // «мигает» — каждые полпериода переключаем светодиод
         case LED_STATE_BLINK: {
             // Переключить светодиод, если прошёл полупериод мигания
-            if (period_elapsed(&last_toggle_us, half_period_us)) {
+            if (systime_period_elapsed(&last_toggle_us, half_period_us)) {
                 led_toggle();   // вызывает led_set() с обратным значением 
             }
             break;

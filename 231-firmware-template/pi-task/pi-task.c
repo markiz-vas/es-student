@@ -1,8 +1,10 @@
 // Заголовочный файл задачи вычисления π (пи) с прерыванием на другие процессы
 #include "pi-task.h"
 // заголовочные файлы для stdio_init_all
-// ради типов SDK, [getchar_timeout_us], [PICO_ERROR_TIMEOUT], NULL, uint, time_us_64()
+// ради типов SDK, [getchar_timeout_us], [PICO_ERROR_TIMEOUT], NULL, uint 
 #include "pico/stdlib.h"
+// заголовочный файл работы со временем
+#include "systime/systime.h"
 
 // calc_pi // TASK 2.2.3 //
 // прикидка: за член ряда 4 операции с double, 175 + 110 + 190 + 110 = 585 тактов;
@@ -91,7 +93,7 @@ void pi_task_handle(void)
                 // Промежуточное (итоговое) сохранение результата
                 pi_result = 4.0 * pi_sum;
                 // Сохраняем время
-                calc_us = time_us_64(); // Замер монотонного времени
+                calc_us = systime_us(); // Замер монотонного времени
             }
 
             // Вычисления закончились    
@@ -99,7 +101,7 @@ void pi_task_handle(void)
                 // Промежуточное (итоговое) сохранение результата
                 pi_result = 4.0 * pi_sum;
                 // Сохраняем время
-                calc_us = time_us_64(); // Замер монотонного времени
+                calc_us = systime_us(); // Замер монотонного времени
                 // Конец вычислений
                 pi_state = PI_STATE_RESULT;
             }
@@ -120,7 +122,7 @@ bool pi_task_start(uint32_t terms) {
     pi_terms_end = terms;
 
     // Запомнить время вычисления
-    start_us = time_us_64(); // Замер монотонного времени
+    start_us = systime_us(); // Замер монотонного времени
     calc_us  = start_us;
 
     // Запустить вычисление

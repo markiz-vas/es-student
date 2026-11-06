@@ -2,6 +2,8 @@
 #include "profiling.h"
 // ради типов SDK
 #include "pico/stdlib.h"
+// заголовочный файл работы со временем
+#include "systime/systime.h"
 
 
 
@@ -44,9 +46,9 @@ static void profiling_global_init(uint32_t id, const char *name) {
     global_stopwatch.avg_sum = 0;
     global_stopwatch.max_us  = 0;   
     // возвращает младшие 32 разряда часов
-    global_stopwatch.previous_us = time_us_32();
+    global_stopwatch.previous_us = systime_us_32();
     // ТЕОРИЯ // TASK 2.2.4 //
-    //  time_us_32() возвращает младшие 32 разряда тех же часов, что time_us_64(). 
+    //  time_us_32() возвращает младшие 32 разряда тех же часов, что _time_us_64(). 
     //  Читать их дешевле, а переполняются они раз в 71,6 минуты. 
     //  Разность двух показаний переполнение переживает, и замер остаётся верным. 
 }
@@ -54,7 +56,7 @@ static void profiling_global_init(uint32_t id, const char *name) {
 // вызывается в начале каждой итерации и учитывает прошлую
 static void profiling_global_iteration(void) {
     // Текущее время (количество тактов)
-    uint32_t now_us = time_us_32();
+    uint32_t now_us = systime_us_32();
     // Сколько прошло от предыдущего замера
     uint32_t iteration_us = now_us - global_stopwatch.previous_us;
     // Новое значение предыдущего замера
@@ -164,7 +166,7 @@ bool profiling_start(uint32_t id)
         
         // Замеры для текущего секундомера
         stopwatches[id].count++;                    // Количество кругов (переполнение через 71 минуту)
-        stopwatches[id].start_us = time_us_32();    // возвращает младшие 32 разряда часов
+        stopwatches[id].start_us = systime_us_32();    // возвращает младшие 32 разряда часов
     }
     // Секундомеры с номерами от 0 до STOPWATCH_QTY
     return true; 
@@ -180,7 +182,7 @@ bool profiling_stop(uint32_t id)
         if (stopwatches[id].name == NULL) return false; // Секундомер не заполнен в main.c
 
         // Вычисление времени (от старта до стопа)
-        uint32_t now_us = time_us_32(); // возвращает младшие 32 разряда часов
+        uint32_t now_us = systime_us_32(); // возвращает младшие 32 разряда часов
         uint32_t iteration_us = now_us - stopwatches[id].start_us;
 
         // Запоминаем максимальное значение времени
@@ -226,7 +228,7 @@ void profiling_reset(void)
         stopwatches[id].count    = 0;
         stopwatches[id].avg_sum  = 0;
         stopwatches[id].max_us   = 0;
-        stopwatches[id].start_us = time_us_32();
+        stopwatches[id].start_us = systime_us_32();
     }
     // Сброс максимального замера для суперцикла
     profiling_global_reset_max();
@@ -245,7 +247,7 @@ bool profiling_reset_id(uint32_t id) {
         stopwatches[id].count    = 0;
         stopwatches[id].avg_sum  = 0;
         stopwatches[id].max_us   = 0;
-        stopwatches[id].start_us = time_us_32();
+        stopwatches[id].start_us = systime_us_32();
     }
     return true;
 }

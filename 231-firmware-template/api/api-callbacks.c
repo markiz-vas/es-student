@@ -9,7 +9,7 @@
 // для работы со строками, strcmp() и memset()
 #include <string.h>
 
-// ради типов SDK, [getchar_timeout_us], [PICO_ERROR_TIMEOUT], NULL, uint, time_us_64()
+// ради типов SDK, [getchar_timeout_us], [PICO_ERROR_TIMEOUT], NULL, uint, _time_us_64()
 #include "pico/stdlib.h"
 // заголовочный файл протокола команд
 #include "api-commands.h"
@@ -17,6 +17,8 @@
 #include "device/device.h"
 // заголовочный файл паспорта прошивки
 #include "firmware/firmware.h"
+// заголовочный файл работы со временем
+#include "systime/systime.h"
 // заголовочный файл модуля профилирования (время суперцикла)
 #include "profiling.h"
 // заголовочный файл состояния светодиода: выключен, горит или мигает
@@ -208,11 +210,11 @@ static void cmd_info(const command_t *command) {
 /// PROFILING /// START ///
 // Печатает монотонное время прибора, в миллисекундах
 //  Монотонное время прибора ведёт таймер. Он прибавляет единицу раз в микросекунду, 
-//  начиная с момента сброса. Показание счёта возвращает функция time_us_64()
+//  начиная с момента сброса. Показание счёта возвращает функция _time_us_64()
 static void cmd_uptime(const command_t *command) {
     // Печатает монотонное время прибора, в миллисекундах
-    printf("uptime: %llu ms\n", time_us_64() / 1000);
-    //  time_us_64() возвращает uint64_t. Такое число печатают через %llu. 
+    printf("uptime: %llu ms\n", systime_ms());
+    //  _time_us_64() возвращает uint64_t. Такое число печатают через %llu. 
     //  Деление на 1000 переводит микросекунды в миллисекунды.
 }
 

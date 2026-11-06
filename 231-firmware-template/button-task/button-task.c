@@ -8,6 +8,9 @@
 // заголовочные файлы для gpio_init
 // заголовочные файлы для gpio_set_dir, gpio_put 
 #include "hardware/gpio.h"
+// заголовочный файл работы со временем
+#include "systime/systime.h"
+
 
 // Нормер выхода
 static const uint BUTTON_PIN = 15;
@@ -64,7 +67,7 @@ void button_task_handle(void)
     bool state = gpio_get(BUTTON_PIN);     // Считали значение
     
     // читаем часы // Замер монотонного времени
-    uint64_t now_us = time_us_64();
+    uint64_t now_us = systime_us();
 
     // переходы по таблице; 
     switch (button_state) {
