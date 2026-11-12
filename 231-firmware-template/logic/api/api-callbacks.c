@@ -237,7 +237,7 @@ static void print_profiling_id(uint32_t id) {
         // Вычисление среднего
         float avg_us = (float)stopwatch->avg_sum / (float)stopwatch->count;
         // печать
-        printf("%-10s count %-8u  mean %.2f us max %6u us\n", 
+        printf("%-11s count %-11u mean %.2f us max %u us\n", 
                 stopwatch->name, (unsigned)stopwatch->count, avg_us, (unsigned)stopwatch->max_us);
     } else printf("error: No stopwatch [%u]\n", (unsigned)id);    
 }
