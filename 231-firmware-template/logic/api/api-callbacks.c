@@ -257,8 +257,8 @@ static void cmd_profiling(const command_t *command)
 
     // Печать
     if (isAll) {// Всех
-        // for (uint32_t id = 0; id <= STOPWATCH_QTY; id++) // Всех (включая глобальный цикл)
-        for (uint32_t id = 1; id <= STOPWATCH_QTY; id++)    // Нет глобального суперцикла
+        for (uint32_t id = 0; id <= STOPWATCH_QTY; id++)    // Всех (включая глобальный цикл)
+        // for (uint32_t id = 1; id <= STOPWATCH_QTY; id++) // Нет глобального суперцикла
             print_profiling_id(id);
     } else {    // Выбранного
         print_profiling_id(arg_id);
