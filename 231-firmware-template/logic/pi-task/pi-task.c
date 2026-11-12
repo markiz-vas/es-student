@@ -2,7 +2,7 @@
 #include "pi-task.h"
 // заголовочные файлы для stdio_init_all
 // ради типов SDK, [getchar_timeout_us], [PICO_ERROR_TIMEOUT], NULL, uint 
-#include "pico/stdlib.h"
+// #include "pico/stdlib.h"
 // заголовочный файл работы со временем
 #include "systime/systime.h"
 
