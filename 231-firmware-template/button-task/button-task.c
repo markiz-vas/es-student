@@ -1,9 +1,9 @@
 // заголовочный файл задача кнопки: нажатие, переключение состояния светодиода
 #include "button-task.h"
 // заголовочный файл состояния светодиода: выключен, горит или мигает
-#include "led-task.h"
+#include "led-task/led-task.h"
 // заголовочный файл Модуль работы с железом (gpio_, stdio_)
-#include "platform.h"
+#include "platform/platform.h"
 // заголовочный файл работы со временем
 #include "systime/systime.h"
 

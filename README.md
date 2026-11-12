@@ -20,4 +20,5 @@
 2026-11-03 з2.3 Архитектура ВПО (п2.3.4 Расчёт по шагам) (pi-task.h, pi-task.c)
 2026-11-04 з2.3 Архитектура ВПО (п2.3.5 Данные вместо печати) (device_info, project_info, profiling, profiling_reset)
 2026-11-04 з2.3 Архитектура ВПО (п2.3.6 Библиотеки) (libs: device, firmware, logging, profiling, stdio-text-protocol, systime)
-2026-11-04 з2.3 Архитектура ВПО (п2.3.7 Железо и логика) ()
+2026-11-04 з2.3 Архитектура ВПО (п2.3.7 Железо и логика) (platform.c, platform.h, logic) [error]
+2026-11-12 з2.3 Архитектура ВПО (п2.3.7 Железо и логика) (platform.c, platform.h, lib_platform) [lib_logic, led-task]

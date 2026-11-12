@@ -29,6 +29,66 @@ pico_sdk_init()
 add_compile_options(-Wall)
 
 
+### PLATFORM ### START ###
+# Из чего собирать.
+# Типовая команда: создать цель сборки с именем ${PROJECT_NAME}
+# из перечисленных исходных файлов. (*.c)
+# add_library устроена так же, как add_executable, но описывает библиотеку; 
+# слово STATIC означает, что её код при сборке войдёт в образ прошивки. 
+# В описании прошивки от модуля остаётся только имя:
+add_library(platform STATIC
+    platform/platform.c    # железо прибора: единственное место проекта с SDK
+)
+
+# путь к заголовкам — папка проекта, platform подключает pico_stdlib как PRIVATE;
+target_link_libraries(platform PRIVATE
+    pico_stdlib            # основная библиотека SDK
+    # pico_cyw43_arch_none  # pico_w #  # we need Wifi to access the GPIO, but we don't need anything else
+)
+
+# путь к заголовкам
+target_include_directories(platform PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+### PLATFORM ### END ###
+
+
+### LOGIC ### START ###
+# логика прибора: задачи и команды, без SDK
+add_library(logic STATIC
+    # исходники api, led-task, button-task и pi-task
+   #  logic/api/api.c
+   #  logic/api/api-callbacks.c
+   #  logic/button-task/button-task.c
+    logic/led-task/led-task.c
+   #  logic/pi-task/pi-task.c
+)
+
+# путь к заголовкам — папка logic
+# через этот путь logic находит и firmware.h
+target_include_directories(logic PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    logic                  # папка с библиотекой logic
+)
+
+# stdio_text_protocol — PUBLIC, остальные библиотеки — PRIVATE
+# Подключаем внешние библиотеки
+target_link_libraries(logic PUBLIC
+    stdio-text-protocol     # подключение библиотеки протокола (она нужна пользователям библиотеки, и те получают её вместе с библиотекой)
+)
+
+# Подключаем внешние библиотеки
+target_link_libraries(logic PRIVATE
+   #  device                  # подключение библиотеки паспорта устройства
+   #  logging                 # подключение библиотеки журнала
+   #  profiling               # подключение библиотеки профилирования
+    systime                 # подключение библиотеки работы со временем
+   #  firmware                # подключение библиотеки паспорта прошивки
+)
+### LOGIC ### END ###
+
+
+
 # Из чего собирать.
 # Типовая команда: создать цель сборки с именем ${PROJECT_NAME}
 # из перечисленных исходных файлов. (*.c)
@@ -36,10 +96,10 @@ add_executable(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/main.c
    ${CMAKE_CURRENT_SOURCE_DIR}/api/api.c
    ${CMAKE_CURRENT_SOURCE_DIR}/api/api-callbacks.c
-   ${CMAKE_CURRENT_SOURCE_DIR}/led-task/led-task.c
+   # ${CMAKE_CURRENT_SOURCE_DIR}/led-task/led-task.c
    ${CMAKE_CURRENT_SOURCE_DIR}/button-task/button-task.c
    ${CMAKE_CURRENT_SOURCE_DIR}/pi-task/pi-task.c
-   ${CMAKE_CURRENT_SOURCE_DIR}/platform/platform.c
+   # ${CMAKE_CURRENT_SOURCE_DIR}/platform/platform.c
    
    #TASK 2.3.6# # add files in libs
    # ${CMAKE_CURRENT_SOURCE_DIR}/logging/log.c
@@ -58,10 +118,10 @@ add_executable(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME} PRIVATE
    ${CMAKE_CURRENT_SOURCE_DIR}            # для поиска *.h в корневой папки и подпапок
    ${CMAKE_CURRENT_SOURCE_DIR}/api
-   ${CMAKE_CURRENT_SOURCE_DIR}/led-task
+   # ${CMAKE_CURRENT_SOURCE_DIR}/led-task
    ${CMAKE_CURRENT_SOURCE_DIR}/button-task
    ${CMAKE_CURRENT_SOURCE_DIR}/pi-task
-   ${CMAKE_CURRENT_SOURCE_DIR}/platform
+   # ${CMAKE_CURRENT_SOURCE_DIR}/platform
    
    #TASK 2.3.6# # add files in libs
    # ${CMAKE_CURRENT_SOURCE_DIR}/logging
@@ -94,6 +154,10 @@ target_link_libraries(${PROJECT_NAME}
    profiling               # подключение библиотеки профилирования
    
    # pico_cyw43_arch_none  # pico_w #  # we need Wifi to access the GPIO, but we don't need anything else
+
+   # Внутринние библиотеки проекта
+   platform                # подключение к пинам платы
+   logic                   # логика всех задач
 )
 
 

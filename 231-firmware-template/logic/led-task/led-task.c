@@ -1,7 +1,7 @@
 // заголовочный файл состояния светодиода: выключен, горит или мигает
 #include "led-task.h"
 // заголовочный файл Модуль работы с железом (gpio_, stdio_)
-#include "platform.h"
+#include "platform/platform.h"
 // заголовочный файл работы со временем
 #include "systime/systime.h"
 
@@ -88,12 +88,12 @@ void led_task_set_state(led_state_t state) {
         }//LED_STATE_ON
         case LED_STATE_BLINK: {
             // Отработка состояния светодиода
-            led_task_handle(); //led-task.h
+            led_task_handle(); 
             break;
         }//LED_STATE_BLINK
         // default: {
         //     // Отработка состояния светодиода
-        //     led_task_handle(); //led-task.h
+        //     led_task_handle(); 
         //     break;
         // }//default
     }//switch
