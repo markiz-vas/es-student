@@ -21,7 +21,7 @@
 // заголовочный файл протокола обмена текстовыми командами
 #include "stdio-text-protocol/stdio-text-protocol.h"
 // заголовочный файл протокола api
-#include "api.h"
+#include "api/api.h"
 // заголовочные файлы для stdio_init_all
 // ради типов SDK, [getchar_timeout_us], [PICO_ERROR_TIMEOUT], NULL, uint
 #include "pico/stdlib.h"

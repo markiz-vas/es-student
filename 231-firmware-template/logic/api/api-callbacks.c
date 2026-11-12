@@ -10,9 +10,9 @@
 #include <string.h>
 
 // ради типов SDK, [getchar_timeout_us], [PICO_ERROR_TIMEOUT], NULL, uint, _time_us_64()
-#include "pico/stdlib.h"
+// #include "pico/stdlib.h"
 // заголовочный файл протокола команд
-#include "api-commands.h"
+#include "api/api-commands.h"
 // заголовочный файл лога информации о приборе // заголовочный файл паспорта прошивки
 #include "device/device.h"
 // заголовочный файл паспорта прошивки
@@ -391,7 +391,7 @@ const api_command_t api_commands[] = {
 };
 
 // Общее количество команд (вычисляется и сохраняется в константу)
-const uint api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);
+const uint32_t api_command_count = sizeof(api_commands) / sizeof(api_commands[0]);
 
 
 

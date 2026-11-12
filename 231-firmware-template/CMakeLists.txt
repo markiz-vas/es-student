@@ -57,8 +57,8 @@ target_include_directories(platform PUBLIC
 # логика прибора: задачи и команды, без SDK
 add_library(logic STATIC
     # исходники api, led-task, button-task и pi-task
-   #  logic/api/api.c
-   #  logic/api/api-callbacks.c
+    logic/api/api.c
+    logic/api/api-callbacks.c
     logic/button-task/button-task.c
     logic/led-task/led-task.c
     logic/pi-task/pi-task.c
@@ -79,11 +79,11 @@ target_link_libraries(logic PUBLIC
 
 # Подключаем внешние библиотеки
 target_link_libraries(logic PRIVATE
-   #  device                  # подключение библиотеки паспорта устройства
-   #  logging                 # подключение библиотеки журнала
-   #  profiling               # подключение библиотеки профилирования
+    device                  # подключение библиотеки паспорта устройства
+    logging                 # подключение библиотеки журнала
+    profiling               # подключение библиотеки профилирования
     systime                 # подключение библиотеки работы со временем
-   #  firmware                # подключение библиотеки паспорта прошивки
+    firmware                # подключение библиотеки паспорта прошивки
 )
 ### LOGIC ### END ###
 
@@ -94,8 +94,8 @@ target_link_libraries(logic PRIVATE
 # из перечисленных исходных файлов. (*.c)
 add_executable(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/main.c
-   ${CMAKE_CURRENT_SOURCE_DIR}/api/api.c
-   ${CMAKE_CURRENT_SOURCE_DIR}/api/api-callbacks.c
+   # ${CMAKE_CURRENT_SOURCE_DIR}/api/api.c
+   # ${CMAKE_CURRENT_SOURCE_DIR}/api/api-callbacks.c
    # ${CMAKE_CURRENT_SOURCE_DIR}/led-task/led-task.c
    # ${CMAKE_CURRENT_SOURCE_DIR}/button-task/button-task.c
    # ${CMAKE_CURRENT_SOURCE_DIR}/pi-task/pi-task.c
@@ -117,7 +117,7 @@ add_executable(${PROJECT_NAME}
 # Слово PRIVATE означает, что путь нужен только при сборке этой цели и никуда дальше не передаётся.
 target_include_directories(${PROJECT_NAME} PRIVATE
    ${CMAKE_CURRENT_SOURCE_DIR}            # для поиска *.h в корневой папки и подпапок
-   ${CMAKE_CURRENT_SOURCE_DIR}/api
+   # ${CMAKE_CURRENT_SOURCE_DIR}/api
    # ${CMAKE_CURRENT_SOURCE_DIR}/led-task
    # ${CMAKE_CURRENT_SOURCE_DIR}/button-task
    # ${CMAKE_CURRENT_SOURCE_DIR}/pi-task

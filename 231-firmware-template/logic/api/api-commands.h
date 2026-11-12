@@ -5,8 +5,10 @@
 
 // заголовочный файл протокола обмена текстовыми командами
 #include "stdio-text-protocol/stdio-text-protocol.h"
+// ради типа uintptr_t, uint32_t, uint16_t, uint8_t
+#include <stdint.h>
 // ради типа uint: uint — не язык C, а имя из Pico SDK.
-#include "pico/types.h"
+// #include "pico/types.h"
 
 // обработчик команды: получает имя и аргументы
 typedef void (*api_callback_t)(const command_t *command);
@@ -23,4 +25,4 @@ typedef struct {
 // Массив команд для декодирования COM-порта
 extern const api_command_t api_commands[];
 // Общее количество команд (вычисляется и сохраняется в константу)
-extern const uint api_command_count;
+extern const uint32_t api_command_count;
