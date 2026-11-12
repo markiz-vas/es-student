@@ -21,4 +21,4 @@
 2026-11-04 з2.3 Архитектура ВПО (п2.3.5 Данные вместо печати) (device_info, project_info, profiling, profiling_reset)
 2026-11-04 з2.3 Архитектура ВПО (п2.3.6 Библиотеки) (libs: device, firmware, logging, profiling, stdio-text-protocol, systime)
 2026-11-04 з2.3 Архитектура ВПО (п2.3.7 Железо и логика) (platform.c, platform.h, logic) [error]
-2026-11-12 з2.3 Архитектура ВПО (п2.3.7 Железо и логика) (platform.c, platform.h, lib_platform) [lib_logic, led-task, pi-task, button-task, api, button_task_callback_t]
+2026-11-12 з2.3 Архитектура ВПО (п2.3.7 Железо и логика) (platform.c, platform.h, lib_platform) [lib_logic, led-task, pi-task, button-task, api, no_led_in_button-task, no_sdk_in_main]

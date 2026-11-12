@@ -94,13 +94,14 @@ target_link_libraries(logic PRIVATE
 # из перечисленных исходных файлов. (*.c)
 add_executable(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/main.c
+
+   #TASK 2.3.7# # add files in lib_logic
    # ${CMAKE_CURRENT_SOURCE_DIR}/api/api.c
    # ${CMAKE_CURRENT_SOURCE_DIR}/api/api-callbacks.c
    # ${CMAKE_CURRENT_SOURCE_DIR}/led-task/led-task.c
    # ${CMAKE_CURRENT_SOURCE_DIR}/button-task/button-task.c
    # ${CMAKE_CURRENT_SOURCE_DIR}/pi-task/pi-task.c
    # ${CMAKE_CURRENT_SOURCE_DIR}/platform/platform.c
-   
    #TASK 2.3.6# # add files in libs
    # ${CMAKE_CURRENT_SOURCE_DIR}/logging/log.c
    # ${CMAKE_CURRENT_SOURCE_DIR}/device/device.c
@@ -117,12 +118,13 @@ add_executable(${PROJECT_NAME}
 # Слово PRIVATE означает, что путь нужен только при сборке этой цели и никуда дальше не передаётся.
 target_include_directories(${PROJECT_NAME} PRIVATE
    ${CMAKE_CURRENT_SOURCE_DIR}            # для поиска *.h в корневой папки и подпапок
+   
+   #TASK 2.3.7# # add files in lib_logic
    # ${CMAKE_CURRENT_SOURCE_DIR}/api
    # ${CMAKE_CURRENT_SOURCE_DIR}/led-task
    # ${CMAKE_CURRENT_SOURCE_DIR}/button-task
    # ${CMAKE_CURRENT_SOURCE_DIR}/pi-task
    # ${CMAKE_CURRENT_SOURCE_DIR}/platform
-   
    #TASK 2.3.6# # add files in libs
    # ${CMAKE_CURRENT_SOURCE_DIR}/logging
    # ${CMAKE_CURRENT_SOURCE_DIR}/device
@@ -144,20 +146,21 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 # из неё берутся gpio_init, gpio_put, sleep_ms.
 # pico_unique_id — читает серийный номер платы pico_get_unique_board_id_string()
 target_link_libraries(${PROJECT_NAME}
-   pico_stdlib             # основная библиотека SDK
-   pico_unique_id          # читает серийный номер платы
+   pico_stdlib             # основная библиотека SDK  # если её отключить, то ошибка линковки
    device                  # подключение библиотеки паспорта устройства
    firmware                # подключение библиотеки паспорта прошивки
    logging                 # подключение библиотеки журнала
    stdio-text-protocol     # подключение библиотеки протокола
    systime                 # подключение библиотеки работы со временем
    profiling               # подключение библиотеки профилирования
-   
-   # pico_cyw43_arch_none  # pico_w #  # we need Wifi to access the GPIO, but we don't need anything else
-
+      
    # Внутринние библиотеки проекта
    platform                # подключение к пинам платы
    logic                   # логика всех задач
+
+   #TASK 2.3.7# # add files in lib_logic
+   # pico_unique_id        # читает серийный номер платы
+   # pico_cyw43_arch_none  # pico_w #  # we need Wifi to access the GPIO, but we don't need anything else
 )
 
 

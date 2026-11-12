@@ -24,7 +24,7 @@
 #include "api/api.h"
 // заголовочные файлы для stdio_init_all
 // ради типов SDK, [getchar_timeout_us], [PICO_ERROR_TIMEOUT], NULL, uint
-#include "pico/stdlib.h"
+// #include "pico/stdlib.h"
 
 
 // TASK 2.3.1// dell memory, clock //
@@ -120,6 +120,9 @@ int main()
     // Инициализация, настраивает вывод на выход, устанавливает состояние светодиода
     led_task_init();
 
+    // Печатает, что за прибор перед вами и какая в нём прошивка
+    LOG_INF("%s %s\n", FIRMWARE_NAME, FIRMWARE_VERSION);
+
     // button-task //
     // Инициализация, настраивает вывод на вход
     // Подаем на вход ссылку на функцию из led-task.h
@@ -146,8 +149,6 @@ int main()
     // Инициализация протокола через usb
     stdio_text_protocol_init();
 
-    // Печатает, что за прибор перед вами и какая в нём прошивка
-    LOG_INF("%s %s\n", FIRMWARE_NAME, FIRMWARE_VERSION);
 
 
     // Бесконечный цикл (Суперцикл) - это обязательное условие,
