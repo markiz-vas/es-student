@@ -122,7 +122,8 @@ int main()
 
     // button-task //
     // Инициализация, настраивает вывод на вход
-    button_task_init();
+    // Подаем на вход ссылку на функцию из led-task.h
+    button_task_init(led_task_next_state);
 
     // pi-task //
     // Инициализация, задачи вычисления π

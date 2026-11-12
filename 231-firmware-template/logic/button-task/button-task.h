@@ -7,8 +7,11 @@
 // ради типа uintptr_t, uint32_t, uint16_t, uint8_t
 #include <stdint.h>
 
+// функция, которую задача вызывает на каждое нажатие
+typedef void (*button_task_callback_t)(void);
+
 // Инициализация, настраивает вывод на вход
-void button_task_init(void);
+void button_task_init(button_task_callback_t on_press);
 // Отработка задачи кнопки по состоянию
 void button_task_handle(void);
 

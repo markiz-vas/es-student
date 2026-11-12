@@ -5,7 +5,9 @@
 // заголовочный файл Модуль работы с железом (gpio_, stdio_)
 #include "platform/platform.h"
 // заголовочный файл состояния светодиода: выключен, горит или мигает
-#include "led-task/led-task.h"
+// #include "led-task/led-task.h"
+// ради strtoul, NULL
+#include <stdlib.h>
 
 
 // Таблица состояний кнопки (тип)
@@ -27,9 +29,12 @@ static uint64_t last_toggle_us;
 // Количество нажатий кнопки
 static uint32_t button_count;
 
+// Функция, срабатывающая при нажатии на кнопку (задается в button_task_init)
+button_task_callback_t f_on_press;
+
 
 // Инициализация, настраивает вывод на вход
-void button_task_init(void) 
+void button_task_init(button_task_callback_t on_press)
 {
     // Последнее время (mks, микросекунды, 10-6)
     last_toggle_us = 0;
@@ -37,6 +42,8 @@ void button_task_init(void)
     button_count = 0;
     // Статус кнопки
     button_state = BUTTON_STATE_OFF;
+    // Привязка функции
+    f_on_press = on_press;
 }
 
 // Отработка задачи кнопки
@@ -71,7 +78,8 @@ void button_task_handle(void)
                     // увеличиваем счётчик и вызываем led_task_next_state()
                     button_count++;
                     // вызываем смену состояния светодиода
-                    led_task_next_state();
+                    //led_task_next_state();
+                    if (f_on_press != NULL) f_on_press();
                 }
             }//(!state)
             break;
