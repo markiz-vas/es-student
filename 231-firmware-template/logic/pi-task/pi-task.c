@@ -14,8 +14,8 @@ static const uint32_t CALC_PI_TERMS = 1000000;
 
 // 1 расчет - 585 тактов при 125 МГц — около 4,7 мкс (10-6)
 // 100 расчетов - около 0,47 мс (10-3)
-static const uint32_t PI_TERMS_PER_CALL = 100;
-
+// static const uint32_t PI_TERMS_PER_CALL = 100; // ошибка в расчетах, около 0,51 mc
+static const uint32_t PI_TERMS_PER_CALL = 90;   
 
 // Таблица состояний вычисления π
 typedef enum {

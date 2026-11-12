@@ -75,9 +75,12 @@ static bool parse_u32(const char *text, uint32_t *value)
 // Старт вычисления  π 
 // аргумент команды не обязателен! Должен быть больше 0! И Числом до 4 294 967 295
 static void cmd_pi_start(const command_t *command) {
-    uint32_t members_qty;   // Сюда возвращается число
-    // Проверка на число и перевод строки в число
-    bool isNumber = parse_u32(command->argv[0], &members_qty);
+    uint32_t members_qty = 0;   // Сюда возвращается число
+    bool isNumber = false;      // Второй аргумент число
+    if (command->argc == 2) {   // Введен ровно один аргумент (cmd + arg)
+        // Проверка на число и перевод строки в число
+        isNumber = parse_u32(command->argv[0], &members_qty);
+    }
 
     // Это число? или введена только команда calc_pi (argc = 1)
     if (isNumber || command->argc == 1) {
@@ -93,12 +96,12 @@ static void cmd_pi_start(const command_t *command) {
             else        printf("error: pi is busy\n");
         } else {
             // Точность должна быть больше нуля
-            printf("error: terms must be gerater than 0\n");
+            printf("error: terms must be greater than 0\n");
         }
     } else {
         // Второй аргумент должен быть числом (число больше нуля)
-        printf("error: usage pi_start [%s]\n", command->argv[0]);
-        // printf("error: usage pi_start [terms]\n");
+        // printf("error: usage pi_start [%s]\n", command->argv[0]);
+        printf("error: usage pi_start [terms]\n");
     }
 }
 
@@ -254,7 +257,8 @@ static void cmd_profiling(const command_t *command)
 
     // Печать
     if (isAll) {// Всех
-        for (uint32_t id = 0; id <= STOPWATCH_QTY; id++) 
+        // for (uint32_t id = 0; id <= STOPWATCH_QTY; id++) // Всех (включая глобальный цикл)
+        for (uint32_t id = 1; id <= STOPWATCH_QTY; id++)    // Нет глобального суперцикла
             print_profiling_id(id);
     } else {    // Выбранного
         print_profiling_id(arg_id);

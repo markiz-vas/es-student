@@ -22,4 +22,4 @@
 2026-11-04 з2.3 Архитектура ВПО (п2.3.6 Библиотеки) (libs: device, firmware, logging, profiling, stdio-text-protocol, systime)
 2026-11-04 з2.3 Архитектура ВПО (п2.3.7 Железо и логика) (platform.c, platform.h, logic) [error]
 2026-11-12 з2.3 Архитектура ВПО (п2.3.7 Железо и логика) (platform.c, platform.h, lib_platform) [lib_logic, led-task, pi-task, button-task, api, no_led_in_button-task, no_sdk_in_main]
-2026-11-12 з2.3 Архитектура ВПО (п2.3.8 Железо и логика) (п2.3.8 Приёмка прибора)
+2026-11-12 з2.3 Архитектура ВПО (п2.3.8 Приёмка прибора) (python check-2-3-8.py)
