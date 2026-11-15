@@ -6,6 +6,8 @@
 // заголовочные файлы для gpio_init
 // заголовочные файлы для gpio_set_dir, gpio_put 
 #include "hardware/gpio.h"
+// заголовочный файл для считывания напряжения (ADC)
+#include "hardware/adc.h"
 
 // Pico W devices use a GPIO on the WIFI chip for the LED,
 // so when building for Pico W, CYW43_WL_GPIO_LED_PIN will be defined // pico_w //
@@ -26,8 +28,19 @@ static const uint32_t BUTTON_PERIOD_PIN = 11;
 static uint32_t platform_buttons[BUTTONS_COUNT];
 
 
+// вход АЦП: вывод GP26, канал 0
+#define ADC_PIN 26
+#define ADC_CHANNEL 0
+
+// опорное напряжение АЦП на плате Pico и число уровней 12-разрядного кода
+#define ADC_VREF_V 3.3f
+#define ADC_LEVELS 4096
+
+
+
+
 // Инициализация, настраивает вывод на выход и гасит/зажигает светодиод
-static void led_init(void)
+static void f_led_init(void)
 {
     // Perform initialisation
     // For Pico W devices we need to initialise the driver etc // pico_w //
@@ -42,7 +55,7 @@ static void led_init(void)
 }
 
 // Запоминаем пин кнопки и настраиваем кнопку с питанием
-static void button_init(platform_button_t btn, uint32_t btn_pin)
+static void f_button_init(platform_button_t btn, uint32_t btn_pin)
 {
     // Задаём пин для вывода кнопки
     platform_buttons[btn] = btn_pin;
@@ -61,6 +74,13 @@ static void button_init(platform_button_t btn, uint32_t btn_pin)
     // он мягко притягивает вывод к питанию, и незанятый вход читается как единица
 }
 
+// Инициализация модуля ads (напряжение)
+static void f_adc_init(void) {
+    // Подключаем платформу
+    adc_init();
+    adc_gpio_init(ADC_PIN);
+}
+
 // запускает стандартный ввод-вывод и настраивает выводы
 void platform_init(void)
 {
@@ -68,12 +88,15 @@ void platform_init(void)
     stdio_init_all();
 
     // Инициализация, настраивает вывод на выход и гасит/зажигает светодиод
-    led_init();
+    f_led_init();
 
     // настраиваем кнопку 0
-    button_init(BUTTON_SWITCH, BUTTON_SWITCH_PIN);
+    f_button_init(BUTTON_SWITCH, BUTTON_SWITCH_PIN);
     // настраиваем кнопку 1
-    button_init(BUTTON_PERIOD, BUTTON_PERIOD_PIN);
+    f_button_init(BUTTON_PERIOD, BUTTON_PERIOD_PIN);
+
+    // Инициализация модуля ads (напряжение)
+    f_adc_init();
 }
 
 // включить светодиод
@@ -91,7 +114,7 @@ bool platform_led_get(void){
     return gpio_get(LED_PIN);
 }
 
-// возвращает номер пина
+// возвращает номер пина led
 uint32_t platform_led_pin(void) {
     return LED_PIN;
 }
@@ -103,7 +126,20 @@ bool platform_button_read(platform_button_t btn){
     return gpio_get(platform_buttons[btn]);
 }
 
-// возвращает номер пина
+// возвращает номер пина button
 uint32_t platform_button_pin(platform_button_t btn) {
     return platform_buttons[btn];
+}
+
+
+// напряжение на входе АЦП, выводе GP26, в вольтах
+float platform_voltage_read(void) {
+    // функция, которая снимает один отсчёт и переводит его в вольты
+    adc_select_input(ADC_CHANNEL);
+    return (float)(adc_read() * ADC_VREF_V / ADC_LEVELS);
+}
+
+// возвращает номер пина adc
+uint32_t platform_adc_pin(void) {
+    return ADC_PIN;
 }

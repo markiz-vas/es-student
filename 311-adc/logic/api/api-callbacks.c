@@ -28,6 +28,8 @@
 #include "button-task/button-task.h"
 // Заголовочный файл задачи вычисления π (пи) с прерыванием на другие процессы
 #include "pi-task/pi-task.h"
+// заголовочный файл Модуль работы с железом (gpio_, stdio_, adc_)
+#include "platform/platform.h"
 
 
 // Число без знака из десятичной записи. false — в записи не только цифры
@@ -380,6 +382,13 @@ static void cmd_button(const command_t *command) {
     }
 }
 
+// Считываем напряжение с вывода GP26
+static void cmd_get_voltage(const command_t *command) {
+    // напряжение на GP26 у platform, ответ voltage: <напряжение> V
+    printf("voltage: %.3f V\n", platform_voltage_read());
+}
+
+
 // Массив команд для декодирования COM-порта
 const api_command_t api_commands[] = {
     // "имя команды"    , "описание команды (латиница!)"            , функция-обратный вызов},  // Описание команды (кирилица!)
@@ -394,8 +403,7 @@ const api_command_t api_commands[] = {
     {"pi"               , "print pi and time calc in ms"            , cmd_pi                },  // Печатает значение π и время расчёта в миллисекундах
     {"profiling"        , "print all stopwatches [id_stopwatch]"    , cmd_profiling         },  // Выводит результаты всех заведённых секундомеров с момента сброса [Выбранного секундомера]
     {"profiling_reset"  , "reset all stopwatches [id_stopwatch]"    , cmd_profiling_reset   },  // Сбрасывает результаты всех секундомеров [Выбранного секундомера]
- // {"main_time_exec"   , "superloop iteration: average and maximum", cmd_main_time_exec    },  // Печатает среднее и максимальное время суперцикла
- // {"main_time_reset"  , "reset maximum iteration"                 , cmd_main_time_reset   },  // Обнуляет максимальное время суперцикла
+    {"get_voltage"      , "voltage on GP26, ADC input 0"            , cmd_get_voltage       },  // Считываем напряжение с вывода GP26
 };
 
 // Общее количество команд (вычисляется и сохраняется в константу)

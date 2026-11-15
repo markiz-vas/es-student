@@ -42,7 +42,8 @@ add_library(platform STATIC
 
 # путь к заголовкам — папка проекта, platform подключает pico_stdlib как PRIVATE;
 target_link_libraries(platform PRIVATE
-    pico_stdlib            # основная библиотека SDK
+    pico_stdlib             # основная библиотека SDK
+    hardware_adc            # для измерения напряжения на плате
     # pico_cyw43_arch_none  # pico_w #  # we need Wifi to access the GPIO, but we don't need anything else
 )
 
@@ -68,22 +69,21 @@ add_library(logic STATIC
 # через этот путь logic находит и firmware.h
 target_include_directories(logic PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
-    logic                  # папка с библиотекой logic
-)
-
-# stdio_text_protocol — PUBLIC, остальные библиотеки — PRIVATE
-# Подключаем внешние библиотеки
-target_link_libraries(logic PUBLIC
+    logic                   # папка с библиотекой logic
+    )
+    
+    # stdio_text_protocol — PUBLIC, остальные библиотеки — PRIVATE
+    # Подключаем внешние библиотеки
+    target_link_libraries(logic PUBLIC
     stdio-text-protocol     # подключение библиотеки протокола (она нужна пользователям библиотеки, и те получают её вместе с библиотекой)
-)
-
-# Подключаем внешние библиотеки
-target_link_libraries(logic PRIVATE
+    )
+    
+    # Подключаем внешние библиотеки
+    target_link_libraries(logic PRIVATE
     device                  # подключение библиотеки паспорта устройства
     logging                 # подключение библиотеки журнала
     profiling               # подключение библиотеки профилирования
     systime                 # подключение библиотеки работы со временем
-  # firmware                # подключение библиотеки паспорта прошивки
 )
 ### LOGIC ### END ###
 
@@ -95,47 +95,12 @@ target_link_libraries(logic PRIVATE
 add_executable(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/main.c
    ${CMAKE_CURRENT_SOURCE_DIR}/firmware/firmware.c  # Исходники паспорта прошивки
-
-   #TASK 2.3.7# # add files in lib_logic
-   # ${CMAKE_CURRENT_SOURCE_DIR}/api/api.c
-   # ${CMAKE_CURRENT_SOURCE_DIR}/api/api-callbacks.c
-   # ${CMAKE_CURRENT_SOURCE_DIR}/led-task/led-task.c
-   # ${CMAKE_CURRENT_SOURCE_DIR}/button-task/button-task.c
-   # ${CMAKE_CURRENT_SOURCE_DIR}/pi-task/pi-task.c
-   # ${CMAKE_CURRENT_SOURCE_DIR}/platform/platform.c
-   #TASK 2.3.6# # add files in libs
-   # ${CMAKE_CURRENT_SOURCE_DIR}/logging/log.c
-   # ${CMAKE_CURRENT_SOURCE_DIR}/device/device.c
-   # ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol/stdio-text-protocol.c
-   # ${CMAKE_CURRENT_SOURCE_DIR}/profiling/profiling.c
-   #TASK 2.3.2# # dellete files from project "231-firmware-template"
-   # ${CMAKE_CURRENT_SOURCE_DIR}/led/led.c
-   #TASK 2.3.1# # dellete files from project "231-firmware-template"
-   # ${CMAKE_CURRENT_SOURCE_DIR}/memory/memory.c
-   # ${CMAKE_CURRENT_SOURCE_DIR}/clock/clock.c
 )
 
 # Указываем где искать заголовочные файлы (*.h)
 # Слово PRIVATE означает, что путь нужен только при сборке этой цели и никуда дальше не передаётся.
 target_include_directories(${PROJECT_NAME} PRIVATE
    ${CMAKE_CURRENT_SOURCE_DIR}            # для поиска *.h в корневой папки и подпапок
-   
-   #TASK 2.3.7# # add files in lib_logic
-   # ${CMAKE_CURRENT_SOURCE_DIR}/api
-   # ${CMAKE_CURRENT_SOURCE_DIR}/led-task
-   # ${CMAKE_CURRENT_SOURCE_DIR}/button-task
-   # ${CMAKE_CURRENT_SOURCE_DIR}/pi-task
-   # ${CMAKE_CURRENT_SOURCE_DIR}/platform
-   #TASK 2.3.6# # add files in libs
-   # ${CMAKE_CURRENT_SOURCE_DIR}/logging
-   # ${CMAKE_CURRENT_SOURCE_DIR}/device
-   # ${CMAKE_CURRENT_SOURCE_DIR}/stdio-text-protocol
-   # ${CMAKE_CURRENT_SOURCE_DIR}/profiling
-   #TASK 2.3.2# # dellete files from project "231-firmware-template"
-   # ${CMAKE_CURRENT_SOURCE_DIR}/led
-   #TASK 2.3.1# # dellete files from project "231-firmware-template"
-   # ${CMAKE_CURRENT_SOURCE_DIR}/memory
-   # ${CMAKE_CURRENT_SOURCE_DIR}/clock
 )
 
 # Добавляем библиотеки из папки libs

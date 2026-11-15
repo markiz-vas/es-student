@@ -23,10 +23,16 @@ void platform_init(void);
 void platform_led_set(bool on);
 // включен ли светодиод
 bool platform_led_get(void);
-// возвращает номер пина
+// возвращает номер пина led
 uint32_t platform_led_pin(void);
 
 // нажата ли кнопка сейчас, без подавления дребезга
 bool platform_button_read(platform_button_t btn);
-// возвращает номер пина
+// возвращает номер пина button
 uint32_t platform_button_pin(platform_button_t btn);
+
+
+// напряжение на входе АЦП, выводе GP26, в вольтах
+float platform_voltage_read(void);
+// возвращает номер пина adc
+uint32_t platform_adc_pin(void);
