@@ -23,4 +23,5 @@
 2026-11-04 з2.3 Архитектура ВПО (п2.3.7 Железо и логика) (platform.c, platform.h, logic) [error]
 2026-11-12 з2.3 Архитектура ВПО (п2.3.7 Железо и логика) (platform.c, platform.h, lib_platform) [lib_logic, led-task, pi-task, button-task, api, no_led_in_button-task, no_sdk_in_main]
 2026-11-12 з2.3 Архитектура ВПО (п2.3.8 Приёмка прибора) (python check-2-3-8.py)
-2026-11-13 з2.3 Архитектура ВПО (п2.3.9 Изменение требований) (no_lib_firmware, 239-two-buttons, )
+2026-11-13 з2.3 Архитектура ВПО (п2.3.9 Изменение требований) (no_lib_firmware, 239-two-buttons, platform_button_t, button_info_t, button_led_task_next_period)
+2026-11-13 з2.3 Архитектура ВПО (п2.3.9д Долгое нажатие) (long_press, enum_count, LED_PERIODS_COUNT, BUTTONS_COUNT)

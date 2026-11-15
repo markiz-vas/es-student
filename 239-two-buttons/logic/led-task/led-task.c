@@ -145,8 +145,10 @@ void led_task_next_period(void) {
             led_period_state = LED_PERIOD_2;
             break;
         }
-        case LED_PERIOD_2:;
-        case LED_PERIOD_99: {
+        case LED_PERIOD_2 :;
+        case LED_PERIOD_99:;
+      //case LED_PERIODS_COUNT:;    // Чтобы не было Warning
+        default: {                  // Чтобы не было забытого состояния
             led_task_set_period_ms(led_periods_ms[LED_PERIOD_0]); // LED_PERIOD_99
             led_period_state = LED_PERIOD_0;
             break;
