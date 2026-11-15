@@ -369,12 +369,15 @@ static void cmd_led_period(const command_t *command) {
 // Состояние кнопки и число нажатий
 // выводит состояние кнопки и число нажатий с момента сброса
 static void cmd_button(const command_t *command) {
-    // Состояние кнопки
-    char* button_txt = button_task_is_pressed() ? "pressed" : "released";
-    // Число нажатий
-    uint32_t button_count = button_task_get_press_count();
-    // Вывод
-    printf("button: %s, presses %u\n", button_txt, (unsigned)button_count);
+    // Цикл по всем имеющимся кнопкам
+    for (uint32_t btn = 0; btn < BUTTONS_COUNT; btn++) {
+        // Состояние кнопки
+        char* button_txt = button_task_is_pressed(btn) ? "pressed" : "released";
+        // Число нажатий
+        uint32_t button_count = button_task_get_press_count(btn);
+        // Вывод
+        printf("button %u: %s, presses %u\n", (unsigned)(btn+1), button_txt, (unsigned)button_count);
+    }
 }
 
 // Массив команд для декодирования COM-порта

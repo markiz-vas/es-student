@@ -15,10 +15,15 @@
 
 
 // Вывод светодиода
-static const uint LED_PIN = 16;
-// Вывод (вход) кнопки
-static const uint BUTTON_PIN = 15;
+static const uint32_t LED_PIN = 16;
 
+// Вывод (вход) кнопки переключения режима работы светодиода
+static const uint32_t BUTTON_SWITCH_PIN = 15;
+// Вывод (вход) кнопки переключения частоты мигания светодиода
+static const uint32_t BUTTON_FREQUENCY_PIN = 11;
+
+// Список пинов кнопки (в дальнейшем обращение только к нему)
+static uint32_t platform_buttons[BUTTONS_COUNT];
 
 
 // Инициализация, настраивает вывод на выход и гасит/зажигает светодиод
@@ -36,14 +41,18 @@ static void led_init(void)
     gpio_set_dir(LED_PIN, GPIO_OUT);    // настраиваем пин светодиода на выход
 }
 
-static void button_init(void)
+// Запоминаем пин кнопки и настраиваем кнопку с питанием
+static void button_init(platform_button_t btn, uint32_t btn_pin)
 {
+    // Задаём пин для вывода кнопки
+    platform_buttons[btn] = btn_pin;
+
     // Инициализация вывода     // отдать вывод модулю GPIO
     // Вывод работает на вход   // задать направление «вход»
     // Подключаем к подтягивающему регистру
-    gpio_init   (BUTTON_PIN);           // инициализируем пин кнопки
-    gpio_set_dir(BUTTON_PIN, GPIO_IN ); // настраиваем пин кнопки на вход
-    gpio_pull_up(BUTTON_PIN);           // подтягиваем кнопку к питанию
+    gpio_init   (platform_buttons[btn]);          // инициализируем пин кнопки
+    gpio_set_dir(platform_buttons[btn], GPIO_IN); // настраиваем пин кнопки на вход
+    gpio_pull_up(platform_buttons[btn]);          // подтягиваем кнопку к питанию
 
     // ТЕОРИЯ //
     // Пока кнопка не нажата, BUTTON_PIN ни к чему не подключён —
@@ -61,8 +70,10 @@ void platform_init(void)
     // Инициализация, настраивает вывод на выход и гасит/зажигает светодиод
     led_init();
 
-    // настраиваем кнопку
-    button_init();
+    // настраиваем кнопку 0
+    button_init(BUTTON_SWITCH   , BUTTON_SWITCH_PIN   );
+    // настраиваем кнопку 1
+    button_init(BUTTON_FREQUENCY, BUTTON_FREQUENCY_PIN);
 }
 
 // включить светодиод
@@ -85,12 +96,14 @@ uint32_t platform_led_pin(void) {
     return LED_PIN;
 }
 
+
+
 // нажата ли кнопка сейчас, без подавления дребезга
-bool platform_button_read(void){
-    return gpio_get(BUTTON_PIN);
+bool platform_button_read(platform_button_t btn){
+    return gpio_get(platform_buttons[btn]);
 }
 
 // возвращает номер пина
-uint32_t platform_button_pin(void) {
-    return BUTTON_PIN;
+uint32_t platform_button_pin(platform_button_t btn) {
+    return platform_buttons[btn];
 }
