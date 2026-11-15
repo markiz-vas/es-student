@@ -22,7 +22,10 @@ static uint64_t half_period_us;
 // Последнее время (mks, микросекунды, 10-6)
 static uint64_t last_toggle_us;
 
-
+// Список пинов кнопки (в дальнейшем обращение только к нему)
+static uint32_t led_periods_ms[LED_PERIODS_COUNT];
+// Состояние светодиода
+static led_period_state_t led_period_state;
 
 
 // Вспомогательная функция: из других файлов её не вызвать
@@ -40,6 +43,13 @@ static void led_toggle(void) {
 // Инициализация, настраивает вывод на выход, устанавливает состояние светодиода
 void led_task_init(void)
 {
+    // Установить состояние периода светодиода = 0 (задан вручную)
+    led_period_state = LED_PERIOD_99;
+    // Задать времена периодов мигания при смене состояния
+    led_periods_ms[LED_PERIOD_0] = 250 ;    // (ms, миллисекунды, 10-3)
+    led_periods_ms[LED_PERIOD_1] = 500 ;    // (ms, миллисекунды, 10-3)
+    led_periods_ms[LED_PERIOD_2] = 1000;    // (ms, миллисекунды, 10-3)
+
     // задаем начальное значение светодиода
     led_set(led_state_pin);             
     // Устанавливаем период
@@ -122,6 +132,28 @@ void led_task_next_state(void) {
     }//switch
 }
 
+// Установить следующее состояние период светодиода
+void led_task_next_period(void) {
+    switch (led_period_state) {
+        case LED_PERIOD_0: {
+            led_task_set_period_ms(led_periods_ms[LED_PERIOD_1]); // LED_PERIOD_99
+            led_period_state = LED_PERIOD_1;
+            break;
+        }
+        case LED_PERIOD_1: {
+            led_task_set_period_ms(led_periods_ms[LED_PERIOD_2]); // LED_PERIOD_99
+            led_period_state = LED_PERIOD_2;
+            break;
+        }
+        case LED_PERIOD_2:;
+        case LED_PERIOD_99: {
+            led_task_set_period_ms(led_periods_ms[LED_PERIOD_0]); // LED_PERIOD_99
+            led_period_state = LED_PERIOD_0;
+            break;
+        }
+    }//switch
+}
+
 
 // Установить период светодиода в состоянии LED_STATE_BLINK
 // Переключение происходит в функции led_task_handle через полупериод
@@ -131,6 +163,10 @@ bool led_task_set_period_ms(uint32_t period_ms) {
     // на каждой итерации: такой период не принимается
     if (period_ms == 0) return false;
     
+    // Установить состояние периода светодиода = 99 (задан вручную)
+    // Если переключатель, то после функции необходимо выставить необходимое состояние
+    led_period_state = LED_PERIOD_99;
+
     // Установка полупериода в микросекундах
     half_period_us = (uint64_t)period_ms * 1000 / 2;
     return true;

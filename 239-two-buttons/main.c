@@ -127,8 +127,8 @@ int main()
     // button-task //
     // Инициализация, настраивает вывод на вход
     // Подаем на вход ссылку на функцию из led-task.h
-    button_task_init(BUTTON_SWITCH   , led_task_next_state);
-    button_task_init(BUTTON_FREQUENCY, NULL               );
+    button_task_init(BUTTON_SWITCH, led_task_next_state );
+    button_task_init(BUTTON_PERIOD, led_task_next_period);
 
     // pi-task //
     // Инициализация, задачи вычисления π
@@ -168,8 +168,8 @@ int main()
         // button-task //
         // Отработка задачи кнопки
         profiling_start(STOPWATCH_BUTTON);
-        button_task_handle(BUTTON_SWITCH   );
-        button_task_handle(BUTTON_FREQUENCY);
+        button_task_handle(BUTTON_SWITCH);
+        button_task_handle(BUTTON_PERIOD);
         profiling_stop (STOPWATCH_BUTTON);
 
         // led-task //

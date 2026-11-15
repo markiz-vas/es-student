@@ -20,7 +20,7 @@ static const uint32_t LED_PIN = 16;
 // Вывод (вход) кнопки переключения режима работы светодиода
 static const uint32_t BUTTON_SWITCH_PIN = 15;
 // Вывод (вход) кнопки переключения частоты мигания светодиода
-static const uint32_t BUTTON_FREQUENCY_PIN = 11;
+static const uint32_t BUTTON_PERIOD_PIN = 11;
 
 // Список пинов кнопки (в дальнейшем обращение только к нему)
 static uint32_t platform_buttons[BUTTONS_COUNT];
@@ -71,9 +71,9 @@ void platform_init(void)
     led_init();
 
     // настраиваем кнопку 0
-    button_init(BUTTON_SWITCH   , BUTTON_SWITCH_PIN   );
+    button_init(BUTTON_SWITCH, BUTTON_SWITCH_PIN);
     // настраиваем кнопку 1
-    button_init(BUTTON_FREQUENCY, BUTTON_FREQUENCY_PIN);
+    button_init(BUTTON_PERIOD, BUTTON_PERIOD_PIN);
 }
 
 // включить светодиод
