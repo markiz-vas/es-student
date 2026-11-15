@@ -15,7 +15,8 @@
 // заголовочный файл лога информации о приборе // заголовочный файл паспорта прошивки
 #include "device/device.h"
 // заголовочный файл паспорта прошивки
-#include "firmware/firmware.h"
+// #include "firmware/firmware.h"   // lib firmware
+#include "firmware.h"               // firmware в корне проекта
 // заголовочный файл модуля профилирования (время суперцикла)
 #include "profiling/profiling.h"
 // заголовочный файл протокола обмена текстовыми командами

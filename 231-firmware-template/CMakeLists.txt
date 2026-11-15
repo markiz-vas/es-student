@@ -83,7 +83,7 @@ target_link_libraries(logic PRIVATE
     logging                 # подключение библиотеки журнала
     profiling               # подключение библиотеки профилирования
     systime                 # подключение библиотеки работы со временем
-    firmware                # подключение библиотеки паспорта прошивки
+  # firmware                # подключение библиотеки паспорта прошивки
 )
 ### LOGIC ### END ###
 
@@ -94,6 +94,7 @@ target_link_libraries(logic PRIVATE
 # из перечисленных исходных файлов. (*.c)
 add_executable(${PROJECT_NAME}
    ${CMAKE_CURRENT_SOURCE_DIR}/main.c
+   ${CMAKE_CURRENT_SOURCE_DIR}/firmware/firmware.c  # Исходники паспорта прошивки
 
    #TASK 2.3.7# # add files in lib_logic
    # ${CMAKE_CURRENT_SOURCE_DIR}/api/api.c
@@ -148,7 +149,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME}
    pico_stdlib             # основная библиотека SDK  # если её отключить, то ошибка линковки
    device                  # подключение библиотеки паспорта устройства
-   firmware                # подключение библиотеки паспорта прошивки
+ # firmware                # подключение библиотеки паспорта прошивки
    logging                 # подключение библиотеки журнала
    stdio-text-protocol     # подключение библиотеки протокола
    systime                 # подключение библиотеки работы со временем
