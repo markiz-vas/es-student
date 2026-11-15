@@ -43,6 +43,9 @@ void led_task_next_state(void);
 // Установить следующее состояние период светодиода
 void led_task_next_period(void);
 
+// Установить мигание светодиода
+void led_task_blink(void);
+
 
 
 // Установить период светодиода в состоянии LED_STATE_BLINK

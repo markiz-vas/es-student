@@ -14,7 +14,7 @@
 typedef void (*button_task_callback_t)(void);
 
 // Инициализация, настраивает вывод на вход
-void button_task_init(platform_button_t btn, button_task_callback_t on_press);
+void button_task_init(platform_button_t btn, button_task_callback_t on_press, button_task_callback_t on_long_press);
 // Отработка задачи кнопки по состоянию
 void button_task_handle(platform_button_t btn);
 

@@ -30,6 +30,10 @@ typedef struct {
     uint32_t button_count;
     // Функция, срабатывающая при нажатии на кнопку (задается в button_task_init)
     button_task_callback_t f_on_press;
+    // Функция, срабатывающая при долгом нажатии на кнопку (задается в button_task_init)
+    button_task_callback_t f_on_long_press;
+    // Было ли длинное нажатие? // Только если есть функция на длинное нажатие
+    bool is_long_press;
 } button_info_t;
 
 // Список информации о всех кнопок (в дальнейшем обращение только к нему)
@@ -38,10 +42,12 @@ static button_info_t button_info[BUTTONS_COUNT];
 // Ожидание для кнопки (mks, микросекунды, 10-6)
 // Константа 20mc для борьбы с дребезгом
 static const uint64_t debounce_us = 20 * 1000;
+// Константа 1c для борьбы с долгим нажатием
+static const uint64_t long_press_us = 1 * 1000 * 1000;
 
 
 // Инициализация, настраивает вывод на вход
-void button_task_init(platform_button_t btn, button_task_callback_t on_press)
+void button_task_init(platform_button_t btn, button_task_callback_t on_press, button_task_callback_t on_long_press)
 {
     // Последнее время (mks, микросекунды, 10-6)
     button_info[btn].last_toggle_us = 0;
@@ -51,6 +57,10 @@ void button_task_init(platform_button_t btn, button_task_callback_t on_press)
     button_info[btn].button_state = BUTTON_STATE_OFF;
     // Привязка функции
     button_info[btn].f_on_press = on_press;
+    // Привязка функции при долгом нажатии
+    button_info[btn].f_on_long_press = on_long_press;
+    // Было ли длинное нажатие? // Только если есть функция на длинное нажатие
+    button_info[btn].is_long_press = false;
 }
 
 // Отработка задачи кнопки
@@ -84,10 +94,12 @@ void button_task_handle(platform_button_t btn)
                     button_info[btn].button_state = BUTTON_STATE_ON;
                     // увеличиваем счётчик и вызываем led_task_next_state()
                     button_info[btn].button_count++;
-                    // вызываем смену состояния светодиода
-                    //led_task_next_state();
-                    if (button_info[btn].f_on_press != NULL) button_info[btn].f_on_press();
-                }
+                    // Проверка, есть ли функция длинного нажатия, если нет, то срабатывает короткое нажатие
+                    if (button_info[btn].f_on_long_press == NULL) {
+                        // вызываем смену состояния светодиода
+                        if (button_info[btn].f_on_press != NULL) button_info[btn].f_on_press();
+                    }// только кототкое нажатие
+                }// дребезг
             }//(!state)
             break;
         }
@@ -96,6 +108,14 @@ void button_task_handle(platform_button_t btn)
                 // запомнить время, перейти в «отпускание?»
                 button_info[btn].last_toggle_us = now_us;
                 button_info[btn].button_state = BUTTON_STATE_ON_END;
+            } else { // нажата (!state)
+                // нажата 20 мс
+                if (now_us - button_info[btn].last_toggle_us >= long_press_us) {
+                    // было длинное нажатие
+                    button_info[btn].is_long_press = true;
+                    // вызываем функцию при длинном нажатии
+                    if (button_info[btn].f_on_long_press != NULL) button_info[btn].f_on_long_press();
+                }
             }
             break;
         }
@@ -108,6 +128,14 @@ void button_task_handle(platform_button_t btn)
                 if (now_us - button_info[btn].last_toggle_us >= debounce_us) {
                     // перейти в «отпущена»
                     button_info[btn].button_state = BUTTON_STATE_OFF;
+                    // Если есть функция длительного нажатия и его не было, то выполнить короткое нажатие
+                    if (button_info[btn].f_on_long_press != NULL && !button_info[btn].is_long_press) {
+                        // вызываем смену состояния светодиода
+                        if (button_info[btn].f_on_press != NULL) button_info[btn].f_on_press();
+                    }// только кототкое нажатие
+                    
+                    // длинного нажатия не было (устанавливаем для следующего нажатия)
+                    button_info[btn].is_long_press = false;
                 }
             }//(state)
             break;

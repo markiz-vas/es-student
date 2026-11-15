@@ -154,6 +154,13 @@ void led_task_next_period(void) {
     }//switch
 }
 
+// Установить мигание светодиода
+void led_task_blink(void) {
+    led_task_set_state(LED_STATE_BLINK); 
+}
+
+
+
 
 // Установить период светодиода в состоянии LED_STATE_BLINK
 // Переключение происходит в функции led_task_handle через полупериод

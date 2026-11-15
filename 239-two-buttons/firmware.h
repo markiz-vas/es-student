@@ -8,7 +8,7 @@
 // Информация о проекте
 #define FIRMWARE_PROJECT "239-two-buttons"
 #define FIRMWARE_REPO "https://github.com/markiz-vas/es-student"
-#define TASK_INFO "п2.3.9 Изменение требований (TASK p.2.3.9)"
+#define TASK_INFO "п2.3.9д Долгое нажатие (TASK p.2.3.9d)"
 
 // тип со сведениями о проекте: Имя, сайт, задание, время и др.
 typedef struct
