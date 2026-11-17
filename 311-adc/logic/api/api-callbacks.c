@@ -382,7 +382,7 @@ static void cmd_button(const command_t *command) {
     }
 }
 
-// Считываем напряжение с вывода GP26
+// Считываем напряжение с вывода GP26 Канал АЦП 0
 static void cmd_get_voltage(const command_t *command) {
     // напряжение на GP26 у platform, ответ voltage: <напряжение> V
     printf("voltage: %.3f V\n", platform_voltage_read());
@@ -403,7 +403,7 @@ const api_command_t api_commands[] = {
     {"pi"               , "print pi and time calc in ms"            , cmd_pi                },  // Печатает значение π и время расчёта в миллисекундах
     {"profiling"        , "print all stopwatches [id_stopwatch]"    , cmd_profiling         },  // Выводит результаты всех заведённых секундомеров с момента сброса [Выбранного секундомера]
     {"profiling_reset"  , "reset all stopwatches [id_stopwatch]"    , cmd_profiling_reset   },  // Сбрасывает результаты всех секундомеров [Выбранного секундомера]
-    {"get_voltage"      , "voltage on GP26, ADC input 0"            , cmd_get_voltage       },  // Считываем напряжение с вывода GP26
+    {"get_voltage"      , "voltage on GP26, ADC input 0"            , cmd_get_voltage       },  // Считываем напряжение с вывода GP26 Канал АЦП 0
 };
 
 // Общее количество команд (вычисляется и сохраняется в константу)

@@ -36,3 +36,5 @@ uint32_t platform_button_pin(platform_button_t btn);
 float platform_voltage_read(void);
 // возвращает номер пина adc
 uint32_t platform_adc_pin(void);
+// возвращает номер канала adc
+uint32_t platform_adc_channel(void);

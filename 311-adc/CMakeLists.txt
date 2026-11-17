@@ -43,7 +43,7 @@ add_library(platform STATIC
 # путь к заголовкам — папка проекта, platform подключает pico_stdlib как PRIVATE;
 target_link_libraries(platform PRIVATE
     pico_stdlib             # основная библиотека SDK
-    hardware_adc            # для измерения напряжения на плате
+    hardware_adc            # для измерения напряжения на плате (АЦП)
     # pico_cyw43_arch_none  # pico_w #  # we need Wifi to access the GPIO, but we don't need anything else
 )
 
