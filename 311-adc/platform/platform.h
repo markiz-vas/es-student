@@ -38,3 +38,8 @@ float platform_voltage_read(void);
 uint32_t platform_adc_pin(void);
 // возвращает номер канала adc
 uint32_t platform_adc_channel(void);
+
+// температура кристалла по встроенному датчику, градусы Цельсия
+float platform_temp_read(void);
+// возвращает номер канала температуры
+uint32_t platform_adc_temp_channel(void);

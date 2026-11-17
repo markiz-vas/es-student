@@ -388,6 +388,11 @@ static void cmd_get_voltage(const command_t *command) {
     printf("voltage: %.3f V\n", platform_voltage_read());
 }
 
+// Считываем температуру с Канала АЦП 4
+static void cmd_get_temp(const command_t *command) {
+    // температура у platform, ответ temp: <температура> C
+    printf("temp: %.1f C\n", platform_temp_read());
+}
 
 // Массив команд для декодирования COM-порта
 const api_command_t api_commands[] = {
@@ -404,6 +409,7 @@ const api_command_t api_commands[] = {
     {"profiling"        , "print all stopwatches [id_stopwatch]"    , cmd_profiling         },  // Выводит результаты всех заведённых секундомеров с момента сброса [Выбранного секундомера]
     {"profiling_reset"  , "reset all stopwatches [id_stopwatch]"    , cmd_profiling_reset   },  // Сбрасывает результаты всех секундомеров [Выбранного секундомера]
     {"get_voltage"      , "voltage on GP26, ADC input 0"            , cmd_get_voltage       },  // Считываем напряжение с вывода GP26 Канал АЦП 0
+    {"get_temp"         , "chip temperature, degrees Celsius"       , cmd_get_temp          },  // Считываем температуру с Канала АЦП 4
 };
 
 // Общее количество команд (вычисляется и сохраняется в константу)

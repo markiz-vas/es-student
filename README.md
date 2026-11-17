@@ -26,3 +26,5 @@
 2026-11-13 з2.3 Архитектура ВПО (п2.3.9 Изменение требований) (no_lib_firmware, 239-two-buttons, platform_button_t, button_info_t, button_led_task_next_period)
 2026-11-15 з2.3 Архитектура ВПО (п2.3.9д Долгое нажатие) (long_press, enum_count, LED_PERIODS_COUNT, BUTTONS_COUNT)
 2026-11-16 з3.1 Управление периферией (п3.1.1 Измерение напряжения) (adc_gpio_init, platform_voltage_read, get_voltage)
+2026-11-17 з3.1 Управление периферией (п3.1.2 Измерение температуры) (platform_temp_read, get_temp)
+

@@ -1,0 +1,46 @@
+задание: 3.1.2
+проект: 311-adc
+устройство: 2e8a:000a
+серийный номер: E6614104034E9E2F
+порт: COM3
+начало: 2026-11-17T20:15:56
+   0.000 --> 
+   0.515 --> help
+   0.515 <-- help
+   0.515 <-- help             list of commands
+   0.515 <-- info             device passport [device, firmware, all]
+   0.515 <-- uptime           time since reset
+   0.515 <-- led_enable       enable led (on)
+   0.515 <-- led_disable      disable led (off)
+   0.515 <-- led_blink        make led blink (period in ms)
+   0.515 <-- led_period       set period blink in ms: led_period (ms)
+   0.515 <-- button           button status and count of presses
+   0.515 <-- pi_start         start calculate pi: pi_start [terms]
+   0.515 <-- pi               print pi and time calc in ms
+   0.577 <-- profiling        print all stopwatches [id_stopwatch]
+   0.577 <-- profiling_reset  reset all stopwatches [id_stopwatch]
+   0.577 <-- get_voltage      voltage on GP26, ADC input 0
+   0.577 <-- get_temp         chip temperature, degrees Celsius
+   1.529 --> info
+   1.576 <-- info
+   1.576 <-- name: es-adc
+   1.576 <-- version: 3.1.2
+   1.576 <-- project: 311-adc
+   1.576 <-- repo: https://github.com/markiz-vas/es-student
+   1.576 <-- board: pico
+   1.576 <-- serial: E6614104034E9E2F
+   1.576 <-- chip: manufacturer 0x927, part 0x0002, revision 2
+   1.591 <-- pico-sdk: 2.3.0
+   2.543 --> get_temp
+   2.590 <-- get_temp
+   2.590 <-- temp: 24.8 C
+   3.588 --> get_temp
+   3.635 <-- get_temp
+   3.635 <-- temp: 24.8 C
+   4.633 --> get_temp
+   4.696 <-- get_temp
+   4.696 <-- temp: 23.9 C
+   5.647 --> get_voltage
+   5.694 <-- get_voltage
+   5.694 <-- voltage: 0.537 V
+итог: отправлено кадров 7, принято строк 32
