@@ -3,40 +3,40 @@
 устройство: 2e8a:000a
 серийный номер: E6614104034E9E2F
 порт: COM3
-начало: 2026-11-17T06:53:37
+начало: 2026-11-17T07:11:42
    0.000 --> 
-   0.500 --> help
-   0.500 <-- help
-   0.500 <-- help             list of commands
-   0.515 <-- info             device passport [device, firmware, all]
-   0.515 <-- uptime           time since reset
-   0.515 <-- led_enable       enable led (on)
-   0.515 <-- led_disable      disable led (off)
-   0.515 <-- led_blink        make led blink (period in ms)
-   0.515 <-- led_period       set period blink in ms: led_period (ms)
-   0.515 <-- button           button status and count of presses
-   0.515 <-- pi_start         start calculate pi: pi_start [terms]
-   0.515 <-- pi               print pi and time calc in ms
-   0.562 <-- profiling        print all stopwatches [id_stopwatch]
-   0.562 <-- profiling_reset  reset all stopwatches [id_stopwatch]
-   0.562 <-- get_voltage      voltage on GP26, ADC input 0
-   1.514 --> info
-   1.576 <-- info
-   1.576 <-- name: es-adc
-   1.576 <-- version: 3.1.1
-   1.576 <-- project: 311-adc
-   1.576 <-- repo: https://github.com/markiz-vas/es-student
-   1.576 <-- board: pico
-   1.576 <-- serial: E6614104034E9E2F
-   1.576 <-- chip: manufacturer 0x927, part 0x0002, revision 2
-   1.576 <-- pico-sdk: 2.3.0
-   2.528 --> get_voltage
-   2.574 <-- get_voltage
-   2.574 <-- voltage: 0.600 V
-   3.573 --> get_voltage
-   3.635 <-- get_voltage
-   3.635 <-- voltage: 0.697 V
-   4.587 --> get_voltage
-   4.634 <-- get_voltage
-   4.634 <-- voltage: 0.751 V
+   0.546 --> help
+   0.546 <-- help
+   0.546 <-- help             list of commands
+   0.546 <-- info             device passport [device, firmware, all]
+   0.546 <-- uptime           time since reset
+   0.546 <-- led_enable       enable led (on)
+   0.546 <-- led_disable      disable led (off)
+   0.546 <-- led_blink        make led blink (period in ms)
+   0.546 <-- led_period       set period blink in ms: led_period (ms)
+   0.546 <-- button           button status and count of presses
+   0.546 <-- pi_start         start calculate pi: pi_start [terms]
+   0.546 <-- pi               print pi and time calc in ms
+   0.609 <-- profiling        print all stopwatches [id_stopwatch]
+   0.609 <-- profiling_reset  reset all stopwatches [id_stopwatch]
+   0.609 <-- get_voltage      voltage on GP26, ADC input 0
+   1.560 --> info
+   1.607 <-- info
+   1.607 <-- name: es-adc
+   1.607 <-- version: 3.1.1
+   1.607 <-- project: 311-adc
+   1.607 <-- repo: https://github.com/markiz-vas/es-student
+   1.607 <-- board: pico
+   1.607 <-- serial: E6614104034E9E2F
+   1.607 <-- chip: manufacturer 0x927, part 0x0002, revision 2
+   1.607 <-- pico-sdk: 2.3.0
+   2.605 --> get_voltage
+   2.652 <-- get_voltage
+   2.652 <-- voltage: 0.523 V
+   3.651 --> get_voltage
+   3.713 <-- get_voltage
+   3.713 <-- voltage: 0.679 V
+   4.665 --> get_voltage
+   4.711 <-- get_voltage
+   4.711 <-- voltage: 0.664 V
 итог: отправлено кадров 6, принято строк 29

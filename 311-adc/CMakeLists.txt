@@ -13,7 +13,7 @@ set(PICO_PLATFORM rp2040)
 include(pico_sdk_import.cmake)
 
 # Строка project — типовая, она задаёт имя проекта.
-project(311_ads)
+project(311_adc)
 
 # PROJECT_NAME (англ. project name) — переменная CMake,
 # в которую попадает имя, объявленное командой project().
