@@ -10,6 +10,8 @@
 #include "button-task/button-task.h"
 // Заголовочный файл задачи вычисления π (пи) с прерыванием на другие процессы
 #include "pi-task/pi-task.h"
+// заголовочный файл задачи телеметрии
+#include "telemetry-task/telemetry-task.h"
 // заголовочный файл для лога ошибок #include "logging\log.h"
 #include "logging/log.h"
 // заголовочный файл лога информации о приборе // заголовочный файл паспорта прошивки
@@ -90,12 +92,13 @@
 
 // Перечисляемый тип с секундомеров. 0 - суперцикл, [1 - STOPWATCH_QTY+1] - остальные
 enum stopwatch_t {
-    STOPWATCH_GLOBAL  = 0,  // global 
-    STOPWATCH_LOOP    = 1,  // loop
-    STOPWATCH_COMMAND = 2,  // command
-    STOPWATCH_LED     = 3,  // led
-    STOPWATCH_BUTTON  = 4,  // button
-    STOPWATCH_PI      = 5,  // pi
+    STOPWATCH_GLOBAL    = 0,  // global 
+    STOPWATCH_LOOP      = 1,  // loop
+    STOPWATCH_COMMAND   = 2,  // command
+    STOPWATCH_LED       = 3,  // led
+    STOPWATCH_BUTTON    = 4,  // button
+    STOPWATCH_PI        = 5,  // pi
+    STOPWATCH_TELEMETRY = 6,  // telemetry  
 };
 
 
@@ -134,18 +137,24 @@ int main()
     // Инициализация, задачи вычисления π
     pi_task_init();
 
+    // telemetry-task //
+    // Инициализация задачи телеметрии, привязка функций обратного вызова
+    // Подаем на вход ссылку на функцию из api.h
+    telemetry_task_init(api_print_telemetry);
+
     // profiling //
     // Создаём глобальный секундомер, запоминаем начальное показание часов для профилирования
     // profiling_global_init();
-    profiling_stopwatch_init(STOPWATCH_GLOBAL, "global"); // Используется для возврата значений (вычислений в нём нет)
+    profiling_stopwatch_init(STOPWATCH_GLOBAL   , "global"      ); // Используется для возврата значений (вычислений в нём нет)
     
     // profiling //
-    // Создаём Секундомер по количеству STOPWATCH_QTY [1 - STOPWATCH_QTY+1]
-    profiling_stopwatch_init(STOPWATCH_LOOP   , "loop"      ); 
-    profiling_stopwatch_init(STOPWATCH_COMMAND, "command"   ); 
-    profiling_stopwatch_init(STOPWATCH_LED    , "led"       ); 
-    profiling_stopwatch_init(STOPWATCH_BUTTON , "button"    ); 
-    profiling_stopwatch_init(STOPWATCH_PI     , "pi"        ); 
+    // Создаём Секундомер по количеству STOPWATCH_QTY [1 - STOPWATCH_QTY+1] // profiling.h
+    profiling_stopwatch_init(STOPWATCH_LOOP     , "loop"        ); 
+    profiling_stopwatch_init(STOPWATCH_COMMAND  , "command"     ); 
+    profiling_stopwatch_init(STOPWATCH_LED      , "led"         ); 
+    profiling_stopwatch_init(STOPWATCH_BUTTON   , "button"      ); 
+    profiling_stopwatch_init(STOPWATCH_PI       , "pi"          ); 
+    profiling_stopwatch_init(STOPWATCH_TELEMETRY, "telemetry"   );
 
     // text-protocol //
     // Инициализация протокола через usb
@@ -183,6 +192,12 @@ int main()
         profiling_start(STOPWATCH_PI);
         pi_task_handle();
         profiling_stop (STOPWATCH_PI);
+
+        // telemetry-task //
+        // Отработка задачи телеметрии
+        profiling_start(STOPWATCH_TELEMETRY);
+        telemetry_task_handle();
+        profiling_stop (STOPWATCH_TELEMETRY);
 
 
         // ТЕОРИЯ //

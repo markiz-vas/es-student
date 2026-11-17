@@ -28,14 +28,15 @@
 #include "button-task/button-task.h"
 // Заголовочный файл задачи вычисления π (пи) с прерыванием на другие процессы
 #include "pi-task/pi-task.h"
+// заголовочный файл задачи телеметрии
+#include "telemetry-task/telemetry-task.h"
 // заголовочный файл Модуль работы с железом (gpio_, stdio_, adc_)
 #include "platform/platform.h"
 
 
 // Число без знака из десятичной записи. false — в записи не только цифры
 // или число не помещается в uint32_t.
-static bool parse_u32(const char *text, uint32_t *value)
-{
+static bool parse_u32(const char *text, uint32_t *value) {
     // strtoul приняла бы и знак: из "-1" получилось бы 4294967295
     if (!isdigit((unsigned char)text[0])) return false;
 
@@ -246,8 +247,7 @@ static void print_profiling_id(uint32_t id) {
 }
 
 // Выводит результаты всех заведённых секундомеров с момента сброса [Выбранного секундомера]
-static void cmd_profiling(const command_t *command) 
-{
+static void cmd_profiling(const command_t *command) {
     bool isAll  = true;
     uint32_t arg_id = 0;
     // Проверяем второй аргумент
@@ -298,7 +298,7 @@ static void cmd_profiling_reset(const command_t *command) {
 }
 /// PROFILING /// END ///
 
-/// LED-TASK /// SATART ///
+/// LED-TASK /// START ///
 // вывод состояния светодиода
 static void led_state_print(void) {
     // Состояние светодиода
@@ -367,7 +367,7 @@ static void cmd_led_period(const command_t *command) {
 }
 /// LED-TASK /// END ///
 
-/// BUTTON-TASK ///
+/// BUTTON-TASK /// START ///
 // Состояние кнопки и число нажатий
 // выводит состояние кнопки и число нажатий с момента сброса
 static void cmd_button(const command_t *command) {
@@ -382,6 +382,7 @@ static void cmd_button(const command_t *command) {
     }
 }
 
+/// TELEMETRY-TASK /// 
 // Считываем напряжение с вывода GP26 Канал АЦП 0
 static void cmd_get_voltage(const command_t *command) {
     // напряжение на GP26 у platform, ответ voltage: <напряжение> V
@@ -393,6 +394,54 @@ static void cmd_get_temp(const command_t *command) {
     // температура у platform, ответ temp: <температура> C
     printf("temp: %.1f C\n", platform_temp_read());
 }
+
+// Запустить возврат телеметрии, период в милисекундах (ms) должен быть больше 10 ms
+static void cmd_tm_start(const command_t *command) {
+    // период телеметрии по умолчанию (милисекунды)
+    #define TELEMETRY_DEFAULT_PERIOD_MS 100
+
+    // Аргументов не больше 1
+    if (command->argc > 2) {
+        printf("error: usage tm_start [<period_ms>]\n"); //ошибка
+        return; //ранний выход с ошибкой
+    }
+
+    // Период светодиода (задаётся по умолчанию)
+    uint32_t period_ms = TELEMETRY_DEFAULT_PERIOD_MS;   // Сюда возвращается число
+
+    // Аргумент <period_ms> не обязателен, но если он есть то проверка его значения
+    if (command->argc == 2) {
+        // Проверка на число и перевод строки в число
+        bool isNumber = parse_u32(command->argv[0], &period_ms);
+        // Это число? или введена только команда (argc = 1)
+        if (!isNumber) {
+            // Второй аргумент должен быть числом (число больше нуля)
+            printf("error: usage tm_start [<period_ms>]\n"); //ошибка
+            //printf("error: usage led_period <period_ms> [%s]\n", command->argv[0]);
+            return; //ранний выход с ошибкой
+        }
+    }//argc == 2
+
+    // Запуск задачи с периодом (period_ms > 10)
+    if (telemetry_task_start(period_ms)) {
+        printf("telemetry: started, period %u ms\n", (unsigned)period_ms); //успех
+    }else {
+        printf("error: period_ms must be at least 10\n"); //ошибка
+    }    
+    
+    // аргументов больше одного или аргумент не число — error: usage
+    // период не принят задачей — error: period_ms must be at least 10
+    // иначе ответ telemetry: started, period <период> ms
+}
+
+// Остановить возврат телеметрии
+static void cmd_tm_stop(const command_t *command) {
+    // остановить задачу 
+    telemetry_task_stop();
+    // ответ telemetry: stopped
+    printf("telemetry: stopped\n");
+}
+/// BUTTON-TASK /// END ///
 
 // Массив команд для декодирования COM-порта
 const api_command_t api_commands[] = {
@@ -410,6 +459,8 @@ const api_command_t api_commands[] = {
     {"profiling_reset"  , "reset all stopwatches [id_stopwatch]"    , cmd_profiling_reset   },  // Сбрасывает результаты всех секундомеров [Выбранного секундомера]
     {"get_voltage"      , "voltage on GP26, ADC input 0"            , cmd_get_voltage       },  // Считываем напряжение с вывода GP26 Канал АЦП 0
     {"get_temp"         , "chip temperature, degrees Celsius"       , cmd_get_temp          },  // Считываем температуру с Канала АЦП 4
+    {"tm_start"         , "start telemetry [<period_ms>] > 10 ms"   , cmd_tm_start          },  // Запустить возврат телеметрии, период в милисекундах (ms) должен быть больше 10 ms
+    {"tm_stop"          , "start telemetry"                         , cmd_tm_stop           },  // Остановить возврат телеметрии
 };
 
 // Общее количество команд (вычисляется и сохраняется в константу)

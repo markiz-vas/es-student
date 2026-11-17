@@ -10,10 +10,10 @@
 // заголовочный файл Модуль работы с железом (gpio_, stdio_)
 #include "platform/platform.h"
 
-// функция, которую задача вызывает на каждое нажатие
+// тип-шаблон функции, которую задача вызывает на каждое нажатие
 typedef void (*button_task_callback_t)(void);
 
-// Инициализация, настраивает вывод на вход
+// Инициализация, привязка функций обратного вызова
 void button_task_init(platform_button_t btn, button_task_callback_t on_press, button_task_callback_t on_long_press);
 // Отработка задачи кнопки по состоянию
 void button_task_handle(platform_button_t btn);

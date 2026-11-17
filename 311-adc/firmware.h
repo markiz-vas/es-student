@@ -3,12 +3,12 @@
 
 // Название модуля и его версия
 #define FIRMWARE_NAME "es-adc"
-#define FIRMWARE_VERSION "3.1.2"
+#define FIRMWARE_VERSION "3.1.3"
 
 // Информация о проекте
 #define FIRMWARE_PROJECT "311-adc"
 #define FIRMWARE_REPO "https://github.com/markiz-vas/es-student"
-#define TASK_INFO "п3.1.2 Измерение температуры (TASK p.3.1.2)"
+#define TASK_INFO "п3.1.3 Телеметрия измерений (TASK p.3.1.3)"
 
 // тип со сведениями о проекте: Имя, сайт, задание, время и др.
 typedef struct

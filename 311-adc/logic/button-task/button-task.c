@@ -2,10 +2,6 @@
 #include "button-task.h"
 // заголовочный файл работы со временем
 #include "systime/systime.h"
-// заголовочный файл Модуль работы с железом (gpio_, stdio_)
-// #include "platform/platform.h"
-// заголовочный файл состояния светодиода: выключен, горит или мигает
-// #include "led-task/led-task.h"
 // ради strtoul, NULL
 #include <stdlib.h>
 

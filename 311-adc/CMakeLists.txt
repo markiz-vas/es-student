@@ -57,12 +57,13 @@ target_include_directories(platform PUBLIC
 ### LOGIC ### START ###
 # логика прибора: задачи и команды, без SDK
 add_library(logic STATIC
-    # исходники api, led-task, button-task и pi-task
+    # исходники api, led-task, button-task, pi-task и др.
     logic/api/api.c
     logic/api/api-callbacks.c
     logic/button-task/button-task.c
     logic/led-task/led-task.c
     logic/pi-task/pi-task.c
+    logic/telemetry-task/telemetry-task.c
 )
 
 # путь к заголовкам — папка logic

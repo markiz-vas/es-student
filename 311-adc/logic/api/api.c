@@ -74,3 +74,9 @@ void api_print_debug_command(const command_t *command)
     // test //
 }
 
+
+// Печатает запись телеметрии строкой tm: <время, мкс> <напряжение, В> <температура, °C>
+void api_print_telemetry(const telemetry_record_t *record) {
+    // Печать телеметрии
+    printf("tm: %llu %.3f %.1f\n", record->time_us, record->voltage_v, record->temp_c);
+}

@@ -4,9 +4,17 @@
 
 // заголовочный файл протокола обмена текстовыми командами
 #include "stdio-text-protocol/stdio-text-protocol.h"
+// заголовочный файл задачи телеметрии
+#include "telemetry-task/telemetry-task.h"
+
 
 // проверяет команду в том порядке, который разобран в т2.3.8
 void api_handle(const command_t *command);
 
 // Печатает команду (command != NULL)
 void api_print_debug_command(const command_t *command);
+
+// печатает запись телеметрии строкой tm: <время, мкс> <напряжение, В> <температура, °C>
+void api_print_telemetry(const telemetry_record_t *record);
+
+
