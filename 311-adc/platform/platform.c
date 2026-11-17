@@ -38,6 +38,10 @@ static uint32_t platform_buttons[BUTTONS_COUNT];
 // встроенный датчик температуры — канал 4
 #define ADC_TEMP_CHANNEL 4
 
+// вывод, через резистор заряжающий конденсатор RC-цепи
+#define CHARGE_PIN 22
+
+
 
 
 // Инициализация, настраивает вывод на выход и гасит/зажигает светодиод
@@ -92,6 +96,15 @@ static void f_adc_init(void) {
     adc_set_temp_sensor_enabled(true);  // включить питание датчика
 }
 
+// Инициализация, резистор заряжающий конденсатор RC-цепи
+static void f_charge_init(void) {
+    // Initialisation GPIO
+    gpio_init(CHARGE_PIN);                 // инициализируем пин резистора
+    gpio_set_dir(CHARGE_PIN, GPIO_OUT);    // настраиваем пин резистора на выход
+    platform_charge_set(false);            // ставим напряжение 0 V
+}
+
+
 // запускает стандартный ввод-вывод и настраивает выводы
 void platform_init(void) {
     // обязательно для работы com-порта
@@ -107,6 +120,9 @@ void platform_init(void) {
 
     // Инициализация модуля adc (напряжение и температура
     f_adc_init();
+
+    // Инициализация, резистор заряжающий конденсатор RC-цепи
+    f_charge_init(); 
 }
 
 // включить светодиод
@@ -211,5 +227,13 @@ uint32_t platform_adc_temp_channel(void) {
     return ADC_TEMP_CHANNEL;
 }
 
+// включить/выключить питание резистра (3,3 В на GP22 или ноль)
+void platform_charge_set(bool on) {
+    gpio_put(CHARGE_PIN, on);
+}
 
+// возвращает номер пина ризистора
+uint32_t platform_charge_pin(void) {
+    return CHARGE_PIN;
+}
 

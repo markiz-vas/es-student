@@ -29,3 +29,4 @@
 2026-11-17 з3.1 Управление периферией (п3.1.2 Измерение температуры) (platform_temp_read, get_temp) 
 2026-11-17 з3.1 Управление периферией (п3.1.3 Телеметрия измерений) (logic/telemetry-task, tm_start [<period_ms>], tm_stop)
 2026-11-17 з3.1 Управление периферией (п3.1.4 Считывание данных в Python) (get_telemetry.py, telemetry.csv, telemetry.png)
+2026-11-17 з3.1 Управление периферией (п3.1.4 Считывание данных в Python) (τ = R·C, charge_on, charge_off, rc.py, rc.csv, rc.png и rc.log)

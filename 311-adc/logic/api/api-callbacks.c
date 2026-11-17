@@ -381,8 +381,10 @@ static void cmd_button(const command_t *command) {
         printf("button %u: %s, presses %u\n", (unsigned)(btn+1), button_txt, (unsigned)button_count);
     }
 }
+/// BUTTON-TASK /// END ///
 
-/// TELEMETRY-TASK /// 
+
+/// TELEMETRY-TASK /// START ///
 // Считываем напряжение с вывода GP26 Канал АЦП 0
 static void cmd_get_voltage(const command_t *command) {
     // напряжение на GP26 у platform, ответ voltage: <напряжение> V
@@ -441,26 +443,46 @@ static void cmd_tm_stop(const command_t *command) {
     // ответ telemetry: stopped
     printf("telemetry: stopped\n");
 }
-/// BUTTON-TASK /// END ///
+
+// Остановить возврат телеметрии
+static void cmd_charge_on(const command_t *command) {
+    // charge_on: включить заряд, 
+    platform_charge_set(true);
+    // ответ charge: on
+    printf("charge: on\n");
+}
+
+// Остановить возврат телеметрии
+static void cmd_charge_off(const command_t *command) {
+    // charge_off: выключить заряд, 
+    platform_charge_set(false);
+    // ответ charge: off
+    printf("charge: off\n");
+}
+/// TELEMETRY-TASK /// START ///
+
+
 
 // Массив команд для декодирования COM-порта
 const api_command_t api_commands[] = {
-    // "имя команды"    , "описание команды (латиница!)"            , функция-обратный вызов},  // Описание команды (кирилица!)
-    {"info"             , "device passport [device, firmware, all]" , cmd_info              },  // Паспорт устройства (2-й аргумент - паспорт проекта)
-    {"uptime"           , "time since reset"                        , cmd_uptime            },  // Печатает монотонное время прибора, в миллисекундах
-    {"led_enable"       , "enable led (on)"                         , cmd_led_enable        },  // Включить светодиод (горит)
-    {"led_disable"      , "disable led (off)"                       , cmd_led_disable       },  // Выключить светодиод (потух)
-    {"led_blink"        , "make led blink (period in ms)"           , cmd_led_blink         },  // Моргание светодиода (моргает)
-    {"led_period"       , "set period blink in ms: led_period (ms)" , cmd_led_period        },  // Установить период светодиода в милисекундах (ms)
-    {"button"           , "button status and count of presses"      , cmd_button            },  // Состояние кнопки и число нажатий
-    {"pi_start"         , "start calculate pi: pi_start [terms]"    , cmd_pi_start          },  // Старт вычисления  π 
-    {"pi"               , "print pi and time calc in ms"            , cmd_pi                },  // Печатает значение π и время расчёта в миллисекундах
-    {"profiling"        , "print all stopwatches [id_stopwatch]"    , cmd_profiling         },  // Выводит результаты всех заведённых секундомеров с момента сброса [Выбранного секундомера]
-    {"profiling_reset"  , "reset all stopwatches [id_stopwatch]"    , cmd_profiling_reset   },  // Сбрасывает результаты всех секундомеров [Выбранного секундомера]
-    {"get_voltage"      , "voltage on GP26, ADC input 0"            , cmd_get_voltage       },  // Считываем напряжение с вывода GP26 Канал АЦП 0
-    {"get_temp"         , "chip temperature, degrees Celsius"       , cmd_get_temp          },  // Считываем температуру с Канала АЦП 4
-    {"tm_start"         , "start telemetry [<period_ms>] > 10 ms"   , cmd_tm_start          },  // Запустить возврат телеметрии, период в милисекундах (ms) должен быть больше 10 ms
-    {"tm_stop"          , "start telemetry"                         , cmd_tm_stop           },  // Остановить возврат телеметрии
+    // "имя команды"    , "описание команды (латиница!)"                , функция-обратный вызов},  // Описание команды (кирилица!)
+    {"info"             , "device passport [device, firmware, all]"     , cmd_info              },  // Паспорт устройства (2-й аргумент - паспорт проекта)
+    {"uptime"           , "time since reset"                            , cmd_uptime            },  // Печатает монотонное время прибора, в миллисекундах
+    {"led_enable"       , "enable led (on)"                             , cmd_led_enable        },  // Включить светодиод (горит)
+    {"led_disable"      , "disable led (off)"                           , cmd_led_disable       },  // Выключить светодиод (потух)
+    {"led_blink"        , "make led blink (period in ms)"               , cmd_led_blink         },  // Моргание светодиода (моргает)
+    {"led_period"       , "set period blink in ms: led_period (ms)"     , cmd_led_period        },  // Установить период светодиода в милисекундах (ms)
+    {"button"           , "button status and count of presses"          , cmd_button            },  // Состояние кнопки и число нажатий
+    {"pi_start"         , "start calculate pi: pi_start [terms]"        , cmd_pi_start          },  // Старт вычисления  π 
+    {"pi"               , "print pi and time calc in ms"                , cmd_pi                },  // Печатает значение π и время расчёта в миллисекундах
+    {"profiling"        , "print all stopwatches [id_stopwatch]"        , cmd_profiling         },  // Выводит результаты всех заведённых секундомеров с момента сброса [Выбранного секундомера]
+    {"profiling_reset"  , "reset all stopwatches [id_stopwatch]"        , cmd_profiling_reset   },  // Сбрасывает результаты всех секундомеров [Выбранного секундомера]
+    {"get_voltage"      , "voltage on GP26, ADC input 0"                , cmd_get_voltage       },  // Считываем напряжение с вывода GP26 Канал АЦП 0
+    {"get_temp"         , "chip temperature, degrees Celsius"           , cmd_get_temp          },  // Считываем температуру с Канала АЦП 4
+    {"tm_start"         , "start telemetry [<period_ms>] > 10 ms"       , cmd_tm_start          },  // Запустить возврат телеметрии, период в милисекундах (ms) должен быть больше 10 ms
+    {"tm_stop"          , "start telemetry"                             , cmd_tm_stop           },  // Остановить возврат телеметрии
+    {"charge_on"        , "turn on  the voltage to the resistor GP22"   , cmd_charge_on         },  // Начать заряжать конденсатор через резистр GP22
+    {"charge_off"       , "turn off the voltage to the resistor GP22"   , cmd_charge_off        },  // Хватит заряжать конденсатор через резистр GP22
 };
 
 // Общее количество команд (вычисляется и сохраняется в константу)

@@ -43,3 +43,8 @@ uint32_t platform_adc_channel(void);
 float platform_temp_read(void);
 // возвращает номер канала температуры
 uint32_t platform_adc_temp_channel(void);
+
+// включить/выключить питание резистра (3,3 В на GP22 или ноль)
+void platform_charge_set(bool on);
+// возвращает номер пина ризистора
+uint32_t platform_charge_pin(void);
